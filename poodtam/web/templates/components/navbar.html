@@ -4,15 +4,15 @@
         <i class="cat icon"></i>&ensp;<b>Poodtam Chatbot</b>
       </div>
       <div class="right menu">
-        <a class="item">
+        <a class="item" href="{{ url_for('dashboard.index') }}">
           <b>Dashboard</b>&ensp;<i class="keyboard icon"></i>
         </a>
         {% if current_user.is_authenticated %}
           <div class="ui inverted dropdown item">
             <b>{{ current_user.name }}</b><i class="dropdown icon"></i>
-            <div class="menu">
-              <a class="item">
-                <i class="setting icon"></i>Settings
+            <div class="menu" style="margin-top: 0.25em;">
+              <a class="item" href="{{ url_for('accounts.edit') }}">
+                <i class="edit icon"></i>Edit Profile
               </a>
               <div class="divider"></div>
               <a class="item" href="{{ url_for('accounts.logout') }}">

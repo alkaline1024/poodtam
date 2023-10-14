@@ -24,17 +24,6 @@ from .. import forms
 module = Blueprint("accounts", __name__)
 
 
-@module.route("/register", methods=["GET", "POST"])
-def register():
-    form = forms.accounts.RegistrationForm()
-    if not form.validate_on_submit():
-        return render_template("accounts/register.html", form=form)
-
-    if oauth.create_user(form):
-        return redirect(url_for("accounts.login"))
-    return redirect(url_for("accounts.login", login_status="failed"))
-
-
 @module.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
@@ -57,3 +46,28 @@ def logout():
     session.clear()
 
     return redirect(url_for("dashboard.index"))
+
+@module.route("/register", methods=["GET", "POST"])
+def register():
+    form = forms.accounts.RegistrationForm()
+    if not form.validate_on_submit():
+        return render_template("accounts/register.html", form=form)
+
+    if oauth.create_user(form):
+        return redirect(url_for("accounts.login"))
+    return redirect(url_for("accounts.login", login_status="failed"))
+
+
+@module.route("/edit-profile", methods=["GET", "POST"])
+@login_required
+def edit():
+    user = current_user._get_current_object()
+    form = forms.accounts.ProfileForm(obj=user)
+    if not form.validate_on_submit():
+        return render_template("accounts/edit.html", form=form)
+
+    user = current_user._get_current_object()
+    form.populate_obj(user)
+    user.save()
+    flash("Saved Successfully!")
+    return render_template("accounts/edit.html", form=form)

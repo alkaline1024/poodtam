@@ -1,4 +1,5 @@
 {% extends "/base/default-page.html" %}
+{% import "/base/html-renderer.html" as renderer %}
 
 {% block content %}
 <div class="ui fluid segment">
@@ -20,12 +21,10 @@
   <form method="POST" class="ui form">
     <div class="form-group" style="margin-bottom: 1em;">
       {{ form.csrf_token }}
-      {{ form.username.label }}
-      {{ form.username(class="form-control") }}
+      {{ renderer.render_field(form.username) }}
     </div>
     <div class="form-group">
-      {{ form.password.label }}
-      {{ form.password(class="form-control") }}
+      {{ renderer.render_field(form.password) }}
     </div>
     <br>
     <button type="submit" class="ui primary button">Login</button> &ensp;

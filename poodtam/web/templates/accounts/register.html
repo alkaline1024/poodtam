@@ -1,4 +1,5 @@
 {% extends "/base/default-page.html" %}
+{% import "/base/html-renderer.html" as renderer %}
 
 {% block content %}
   <div class="ui segment">
@@ -22,25 +23,20 @@
     <form method="POST" class="ui form">
       <div class="form-group" style="margin-bottom: 1em">
         {{ form.csrf_token }}
-        {{ form.username.label }}
-        {{ form.username(class="form-control", rows="1") }}
+        {{ renderer.render_field(form.username) }}
       </div>
       <div class="form-group" style="margin-bottom: 1em">
-        {{ form.password.label }}
-        {{ form.password(class="form-control") }}
+        {{ renderer.render_field(form.password) }}
       </div>
       <div class="form-group" style="margin-bottom: 1em">
-        {{ form.confirm_password.label }}
-        {{ form.confirm_password(class="form-control") }}
+        {{ renderer.render_field(form.confirm_password) }}
       </div>
       <div class="ui hidden divider"></div>
       <div class="form-group" style="margin-bottom: 1em">
-        {{ form.name.label }}
-        {{ form.name(class="form-control", rows="1") }}
+        {{ renderer.render_field(form.name) }}
       </div>
       <div class="form-group" style="margin-bottom: 1em">
-        {{ form.email.label }} <span class="ui grey text">(Optional)</span>
-        {{ form.email(class="form-control", rows="1") }}
+        {{ renderer.render_field(form.email) }}
       </div>
       <p></p>
       <button type="submit" class="ui primary button">Register</button> &ensp;

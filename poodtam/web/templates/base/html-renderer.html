@@ -6,9 +6,9 @@
 {%- set style = '%s %s' | format(class_, eh.get_validate_class(field.errors)) -%}
 {%- endif -%}
 <div class="field">
-  {% if field.flags.required %}
-    {% set requirement_label = ' <span class="ui red text">*</span> <span style="color: grey; font-weight: 400">(required)</span>' %}
-    {{ field.label(field.label.text +  requirement_label | safe) }}
+  {% if not field.flags.required %}
+    {% set optional_label = '<span style="color: grey; font-weight: 400"> (optional)</span>' %}
+    {{ field.label(field.label.text +  optional_label | safe) }}
   {% else %}
     {{ field.label }}
   {% endif %}
@@ -29,9 +29,9 @@
 
 {% macro render_fileinput(field, required) -%}
 <div class="field">
-  {% if field.flags.required or required %}
-    {% set requirement_label = ' <span class="ui red text">*</span> <span style="color: grey; font-weight: 400">(required)</span>' %}
-    {{ field.label(field.label.text +  requirement_label | safe) }}
+  {% if not field.flags.required %}
+    {% set optional_label = '<span style="color: grey; font-weight: 400">(optional)</span>' %}
+    {{ field.label(field.label.text +  optional_label | safe) }}
   {% else %}
     {{ field.label }}
   {% endif %}
@@ -59,7 +59,10 @@
 {%- endmacro %}
 
 {% macro render_multiple_search_select(field) -%}
-{{ render_field(field, class_='ui fluid search selection dropdown') }}
+  {{ render_field(field, class_='ui fluid search selection dropdown') }}
+  <script>
+    $('.ui.fluid.search.selection.dropdown').dropdown();
+  </script>
 {%- endmacro %}
 
 {% macro render_multiple_radio_checkbox(radio_field) -%}

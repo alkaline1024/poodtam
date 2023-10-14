@@ -6,6 +6,8 @@ from flask_mongoengine.wtf import model_form
 
 from poodtam import models
 
+from chatbot import TYPE_CORPUS
+
 BaseRegistrationForm = model_form(
     models.User,
     FlaskForm,
@@ -37,6 +39,7 @@ class RegistrationForm(BaseRegistrationForm):
     email = fields.StringField(
         "Email", validators=[validators.Email(), validators.Optional()]
     )
+    favorite_types = fields.SelectMultipleField("Favorite Types of Restaurants", choices=TYPE_CORPUS)
 
 
 # Define the user login form
@@ -70,3 +73,4 @@ class ProfileForm(BaseProfileForm):
     email = fields.StringField(
         "Email", validators=[validators.Email(), validators.Optional()]
     )
+    favorite_types = fields.SelectMultipleField("Favorite Types of Restaurants", choices=TYPE_CORPUS)

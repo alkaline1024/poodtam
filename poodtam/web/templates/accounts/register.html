@@ -1,0 +1,57 @@
+{% extends "/base/default-page.html" %}
+
+{% block content %}
+<div class="ui grid">
+  <div class="three wide column"></div>
+    <div class="ten wide column">
+      <div class="ui segment">
+        <h1>Register</h1>
+        {% if form.errors %}
+          <div class="ui error message">
+            {% for key, error in form.errors.items() %}
+              {{ error[0] }}
+            {% endfor %}
+          </div>
+        {% endif %}
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="ui error message">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message[1] }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+        <form method="POST" class="ui form">
+          <div class="form-group" style="margin-bottom: 1em">
+            {{ form.csrf_token }}
+            {{ form.username.label }}
+            {{ form.username(class="form-control", rows="1") }}
+          </div>
+          <div class="form-group" style="margin-bottom: 1em">
+            {{ form.password.label }}
+            {{ form.password(class="form-control") }}
+          </div>
+          <div class="form-group" style="margin-bottom: 1em">
+            {{ form.confirm_password.label }}
+            {{ form.confirm_password(class="form-control") }}
+          </div>
+          <div class="ui hidden divider"></div>
+          <div class="form-group" style="margin-bottom: 1em">
+            {{ form.name.label }}
+            {{ form.name(class="form-control", rows="1") }}
+          </div>
+          <div class="form-group" style="margin-bottom: 1em">
+            {{ form.email.label }} <span class="ui grey text">(Optional)</span>
+            {{ form.email(class="form-control", rows="1") }}
+          </div>
+          <p></p>
+          <button type="submit" class="ui primary button">Register</button> &ensp;
+          <span class="ui grey text">Already have an account?</span>&ensp;
+          <a href="{{ url_for('accounts.login') }}">Back to Login</a>
+        </form>
+      </div>
+    </div>
+  <div class="three wide column"></div>
+</div>
+{% endblock %}

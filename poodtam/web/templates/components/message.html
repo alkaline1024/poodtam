@@ -1,0 +1,69 @@
+{% macro UserMessage(input) %}
+<div class="event">
+    <div class="label" style="padding-top: 10px">
+      <i class="big circular colored teal inverted user icon"></i>
+    </div>
+    <div class="content">
+      <div class="ui basic huge teal label">
+        <div class="ui basic left aligned segment">
+          {{ input }}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro BotMessage(message, status, df, df_exist, is_openning) %}
+<div class="event">
+    <div class="label" style="padding-top: 10px">
+      <i class="big circular colored orange inverted cat icon"></i>
+    </div>
+    <div class="content">
+      <div class="ui basic huge {{ 'red' if not status else 'orange' }}  label">
+        <div class="ui basic left aligned segment">
+          {{ message | replace('\n', '<br>') | safe}}
+        </div>
+        {% if status == 'completed' %}
+          {% if df_exist %}
+            <div class="ui basic segment left aligned">
+              {% for row, data in df.iterrows() %}
+                <div class="ui message">
+                  <p>
+                    <h3 class="ui header">{{ data['name'] }}</h3> 
+                    {% for type in data['type'].split(", ") %}
+                      <div class="ui label">{{ type }}</div>
+                    {% endfor %}
+                  </p>
+                  <div class="item">
+                  Opening Time {{ data['opening time'].strftime("%H:%M") }} - {{ data['closing time'].strftime("%H:%M") }} {{ 'Everyday' if data['closed on'] == "No" else "Closed on " + data["closed on"] }}
+                    {% if is_openning(data['opening time'], data['closing time']) %}
+                    <div class="ui basic small green left pointing label">Now opened</div>
+                      {% else %}
+                    <div class="ui basic small red left pointing label">Now Closed</div>
+                    {% endif %}
+                  </div>
+                  <p>
+                    <div class="item">
+                      Price range
+                      {% if data["price"] == "฿" %}
+                      Less than 100 Baht <div class="ui olive small basic label tag" style="font-weight: 400 !important;">฿</div>
+                      {% elif data["price"] == "฿฿" %}
+                      100 Baht - 250 Baht <div class="ui yellow small basic label tag" style="font-weight: 400 !important;">฿฿</div>
+                      {% else %}
+                      More than 250 Baht <div class="ui orange small basic label tag" style="font-weight: 400 !important;">฿฿฿</div>
+                      {% endif %}
+                    </div> 
+                  </p>
+                  <p>
+                    <div class="item"><a><i class="phone alternate icon"></i> {{ data["phone"] | string }}</a></div>
+                    <div class="item"><a href="{{ data['address'] }}" target="_blank" ><i class="map marker alternate icon"></i>View on Google Maps</a></div>
+                  </p>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endmacro %}

@@ -1,0 +1,38 @@
+version: '3'
+services:
+    mongodb:
+        image: mongo
+        container_name: poodtam-mongodb
+        volumes:
+            - ../deployment/poodtam/mongodb/data/db:/data/db
+            - /etc/localtime:/etc/localtime:ro
+        restart: always
+        networks:
+            - default
+
+    web:
+        build: .
+        image: poodtam-image
+        container_name: poodtam-web
+        volumes:
+            - ../deployment:/deployment
+            - /etc/localtime:/etc/localtime:ro
+        ports:
+            - 9800:9000
+        links:
+            - mongodb
+        networks:
+            - default
+        restart: always
+        environment:
+            POODTAM_SETTINGS: /app/poodtam-production.cfg
+        command:
+            # uwsgi --lazy-apps --ini scripts/poodtam-uwsgi.ini
+            /venv/bin/gunicorn -w 2 --bind 0.0.0.0:9000 "poodtam.web:create_app()"
+        logging:
+            options:
+                max-size: "10m"
+                max-file: "3"
+
+networks:
+    default:

@@ -1,0 +1,35 @@
+{% extends "/base/default-page.html" %}
+{% import "/components/message.html" as message_renderer %}
+
+{% block content %}
+<div class="ui basic very padded segment">
+  <div class="ui grid">
+    <div class="three wide column"></div>
+    <div class="ten wide column">
+      <div class="ui raised segment">
+        <div class="ui feed">
+          {{ message_renderer.BotMessage(result, status, df, df_exist, is_openning) }}
+          {{ message_renderer.UserMessage(input) }}
+          <div class="ui teal message center aligned">
+            <form method="POST">
+              <div class="ui action fluid transparent input">
+                <input type="text" name="input" id="input" placeholder="Send a message">
+                <button class="ui teal icon button">
+                  <i class="send icon"></i>&ensp;Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="three wide column"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block additional_js %}
+<script>
+  window.top.location.href="#input";
+</script>
+{% endblock %}

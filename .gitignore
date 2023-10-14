@@ -1,0 +1,8 @@
+/venv
+/env
+*.pyc
+*.cfg
+__pycache__
+node_modules
+*.egg-*
+.vscode

@@ -1,0 +1,15 @@
+{% extends "/base/base-layout.html" %}
+{% block body %}
+
+  <header> 
+  {% block header %}{% endblock %}
+  </header>
+
+  <div class="container">
+    <main>
+      {% include "/components/navbar.html" %}
+      {% block content %}{% endblock content %}
+    </main>
+
+  </div>
+{% endblock body %}

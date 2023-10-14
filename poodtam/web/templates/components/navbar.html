@@ -5,11 +5,16 @@
       </a>
       <div class="right menu">
         <a class="item" href="{{ url_for('dashboard.index') }}">
-          <b>Dashboard</b>&ensp;<i class="keyboard icon"></i>
+          <i class="keyboard icon"></i>&ensp;<b>Dashboard</b>
         </a>
         {% if current_user.is_authenticated %}
           <div class="ui inverted dropdown item">
-            <b>{{ current_user.name }}</b><i class="dropdown icon"></i>
+            {% if current_user.get_picture() %}
+              <img class="ui avatar image" src="{{ current_user.get_picture() }}">
+            {% else %}
+              <i class="inverted teal circular colored user icon"></i>
+            {% endif %}
+            &ensp;<b>{{ current_user.name }}</b><i class="dropdown icon"></i>
             <div class="menu" style="margin-top: 0.25em;">
               <a class="item" href="{{ url_for('accounts.edit') }}">
                 <i class="edit icon"></i>Edit Profile

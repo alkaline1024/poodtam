@@ -68,6 +68,36 @@ def edit():
 
     user = current_user._get_current_object()
     form.populate_obj(user)
+    if form.pic.data:
+        print(form.pic.data)
+        if user.picture:
+            user.picture.replace(
+                form.pic.data,
+                filename=form.pic.data.filename,
+                content_type=form.pic.data.content_type,
+            )
+        else:
+            user.picture.put(
+                form.pic.data,
+                filename=form.pic.data.filename,
+                content_type=form.pic.data.content_type,
+            )
+
+
     user.save()
     flash("Saved Successfully!")
     return render_template("accounts/edit.html", form=form)
+
+@module.route("/accounts/<user_id>/picture/<filename>", methods=["GET", "POST"])
+def picture(user_id, filename):
+    user = models.User.objects.get(id=user_id)
+
+    if not user or not user.picture or user.picture.filename != filename:
+        return abort(403)
+
+    response = send_file(
+        user.picture,
+        download_name=user.picture.filename,
+        mimetype=user.picture.content_type,
+    )
+    return response

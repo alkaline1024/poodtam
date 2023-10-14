@@ -1,7 +1,11 @@
-{% macro UserMessage(input) %}
+{% macro UserMessage(input, current_user) %}
 <div class="event">
     <div class="label" style="padding-top: 10px">
-      <i class="big circular colored teal inverted user icon"></i>
+      {% if current_user.get_picture() %}
+        <img class="ui big avatar image" src="{{ current_user.get_picture() }}">
+      {% else %}
+        <i class="big circular colored teal inverted user icon"></i>
+      {% endif %}
     </div>
     <div class="content">
       <div class="ui basic huge teal label">

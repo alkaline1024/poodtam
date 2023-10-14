@@ -1,5 +1,7 @@
 import mongoengine as me
 import datetime
+
+from flask import url_for
 from flask_login import UserMixin
 
 from chatbot import TYPE_CORPUS
@@ -28,3 +30,10 @@ class User(me.Document, UserMixin):
     last_login_date = me.DateTimeField(
         required=True, default=datetime.datetime.now, auto_now=True
     )
+
+    def get_picture(self):
+        if self.picture:
+            return url_for(
+                "accounts.picture", user_id=self.id, filename=self.picture.filename
+            )
+        return False

@@ -2,6 +2,7 @@ from wtforms import validators
 from wtforms import fields
 
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileAllowed
 from flask_mongoengine.wtf import model_form
 
 from poodtam import models
@@ -39,6 +40,9 @@ class RegistrationForm(BaseRegistrationForm):
     email = fields.StringField(
         "Email", validators=[validators.Email(), validators.Optional()]
     )
+    pic = fields.FileField(
+        "Picture Profile", validators=[FileAllowed(["png", "jpg"], "allow png and jpg")]
+    )
     favorite_types = fields.SelectMultipleField("Favorite Types of Restaurants", choices=TYPE_CORPUS)
 
 
@@ -72,5 +76,8 @@ BaseProfileForm = model_form(
 class ProfileForm(BaseProfileForm):
     email = fields.StringField(
         "Email", validators=[validators.Email(), validators.Optional()]
+    )
+    pic = fields.FileField(
+        "Picture Profile", validators=[FileAllowed(["png", "jpg"], "allow png and jpg")]
     )
     favorite_types = fields.SelectMultipleField("Favorite Types of Restaurants", choices=TYPE_CORPUS)

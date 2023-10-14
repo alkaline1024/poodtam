@@ -4,13 +4,16 @@
 {% block content %}
   <div class="ui segment">
     <h1>Edit Profile</h1>
-    <form method="POST" class="ui form">
+    <form method="POST" class="ui form" enctype="multipart/form-data">
       {{ form.csrf_token }}
       <div class="form-group" style="margin-bottom: 1em;">
         {{ renderer.render_field(form.name) }}
       </div>
       <div class="form-group" style="margin-bottom: 1em;">
         {{ renderer.render_field(form.email) }}
+      </div>
+      <div class="form-group" style="margin-bottom: 1em;">
+        {{ renderer.render_fileinput(form.pic) }}
       </div>
       <div class="form-group" style="margin-bottom: 1em;">
         {{ renderer.render_multiple_search_select(form.favorite_types) }}
@@ -27,9 +30,20 @@
             {{ message }}
           {% endfor %}
         </div>
-        <script>
-          $('.ui.toast').toast({position: 'top center', displayTime: 5000});
-        </script>
     {% endif %}
   {% endwith %}
 {% endblock %}
+
+{% block additional_js %}
+    <script type="text/javascript">
+      $('.ui.toast').toast({position: 'top center', displayTime: 5000});
+      $(".attach-file-pic").click(function() {
+        $(this).parent().find("#pic").click();
+      });
+      $('#pic')
+      .on('change', function(e) {
+        var name = e.target.files[0].name;
+        $('.attach-file-pic', $(e.target).parent()).val(name);
+      });
+    </script>
+{% endblock additional_js %}

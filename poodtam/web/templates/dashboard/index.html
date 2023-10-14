@@ -5,7 +5,7 @@
     <div class="ui raised segment">
       <div class="ui feed">
         {{ message_renderer.BotMessage(result, status, df, df_exist, is_openning) }}
-        {{ message_renderer.UserMessage(input) }}
+        {{ message_renderer.UserMessage(input, current_user) }}
         <div class="ui teal message center aligned">
           <form method="POST">
             <div class="ui action fluid transparent input">

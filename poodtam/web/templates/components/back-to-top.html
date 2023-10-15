@@ -1,0 +1,58 @@
+
+<button onclick="scrollToTop()" id="scroll-to-top" title="Go to top page" class="ui icon black button">
+  <i class="angle double up icon"></i>&ensp; Back to Top
+</button>
+
+<button onclick="scrollToBottom()" id="scroll-to-bottom" title="Go to bottom page" class="ui icon black button">
+  <i class="angle double down icon"></i>&ensp; Scroll Down
+</button>
+
+<style>
+#scroll-to-top {
+  display: none; /* Hidden by default */
+  position: fixed; /* Fixed/sticky position */
+  bottom: 30px; /* Place the button at the bottom of the page */
+  right: 70px; /* Place the button 30px from the right */
+  z-index: 99; /* Make sure it does not overlap */
+}
+#scroll-to-bottom {
+  display: none; /* Hidden by default */
+  position: fixed; /* Fixed/sticky position */
+  bottom: 30px; /* Place the button at the bottom of the page */
+  right: 70px; /* Place the button 30px from the right */
+  z-index: 99; /* Make sure it does not overlap */
+}
+</style>
+
+<script>
+let BackToTopButton = document.getElementById("scroll-to-top");
+let BackToBottomButton = document.getElementById("scroll-to-bottom");
+let ScreenHeight = document.body.scrollHeight;
+window.onscroll = function() {
+  if (document.body.scrollTop > ScreenHeight / 2 || document.documentElement.scrollTop > ScreenHeight / 2) {
+    if (BackToTopButton.style.display == "none") {
+      $(BackToTopButton).transition("fade up");
+      $(BackToBottomButton).transition("fade up");
+    } 
+    BackToTopButton.style.display = "block";
+    BackToBottomButton.style.display = "none";
+  } else {
+    if (BackToBottomButton.style.display == "none") {
+      $(BackToBottomButton).transition("fade up");
+      $(BackToTopButton).transition("fade up");
+    } 
+    BackToBottomButton.style.display = "block";
+    BackToTopButton.style.display = "none";
+  } 
+};
+function scrollToTop() {
+  document.getElementById("html").style.scrollBehavior = "smooth";
+  window.scrollTo(1, 0);
+  document.getElementById("html").style.scrollBehavior = "";
+}
+function scrollToBottom() {
+  document.getElementById("html").style.scrollBehavior = "smooth";
+  window.scrollTo(0, ScreenHeight);
+  document.getElementById("html").style.scrollBehavior = "";
+}
+</script>

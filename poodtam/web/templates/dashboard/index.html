@@ -2,7 +2,8 @@
 {% import "/components/message.html" as message_renderer %}
 
 {% block content %}
-    <div class="ui raised segment">
+    <div class="ui raised padded segment">
+      <div class="ui hidden divider"></div>
       <div class="ui feed">
         {% for message in chat.messages %}
           {% if message.sender == "bot" %}
@@ -24,10 +25,15 @@
       </div>
     </div>
   </div>
+
+  {% include "/components/back-to-top.html" %}
 {% endblock %}
 
 {% block additional_js %}
   <script>
     window.top.location.href = "#input";
+    user_input = document.getElementById("{{ chat.messages[-1].created_date }}");
+    user_input.style.display = "none";
+    $(user_input).transition('fade up');
   </script>
 {% endblock %}

@@ -4,7 +4,7 @@ import datetime
 from flask import url_for
 from flask_login import UserMixin
 
-from chatbot import TYPE_CORPUS
+from chatbot import TYPE_CORPUS, PRICE_CHOICES
 
 
 class User(me.Document, UserMixin):
@@ -22,6 +22,7 @@ class User(me.Document, UserMixin):
 
     # bot prediction
     preferred_types = me.ListField(me.StringField(), choices=TYPE_CORPUS)
+    preferred_prices = me.ListField(me.StringField(), choices=PRICE_CHOICES)
 
     created_date = me.DateTimeField(required=True, default=datetime.datetime.now)
     updated_date = me.DateTimeField(required=True, default=datetime.datetime.now)

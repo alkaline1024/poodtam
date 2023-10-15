@@ -28,6 +28,7 @@ GREETING_CORPUS = [
 df_types = df["type"].str.split(", ").tolist()
 TYPE_CORPUS = list(set([word for sublist in df_types for word in sublist]))
 
+PRICE_CHOICES = [("฿", "฿ (less than 100 baht)"), ("฿฿", "฿฿ (100 baht- 250 baht)"), ("฿฿฿", "฿฿฿ (more than 250 baht)")]
 
 ANYPRICE_CORPUS = [
     "all",

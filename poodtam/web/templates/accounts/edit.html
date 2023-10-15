@@ -16,7 +16,10 @@
         {{ renderer.render_fileinput(form.pic) }}
       </div>
       <div class="form-group" style="margin-bottom: 1em;">
-        {{ renderer.render_multiple_search_select(form.favorite_types) }}
+        {{ renderer.render_multiple_search_select(form.preferred_types) }}
+      </div>
+      <div class="form-group" style="margin-bottom: 1em;">
+        {{ renderer.render_multiple_search_select(form.preferred_prices) }}
       </div>
       <p></p>
       <button type="submit" class="ui primary button"><i class="save icon"></i>Save</button> <a href="{{ url_for('dashboard.index') }}" class="ui button">Cancel</a>

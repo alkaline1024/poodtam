@@ -7,7 +7,7 @@ from flask_mongoengine.wtf import model_form
 
 from poodtam import models
 
-from chatbot import TYPE_CORPUS
+from chatbot import TYPE_CORPUS, PRICE_CHOICES
 
 BaseRegistrationForm = model_form(
     models.User,
@@ -43,7 +43,7 @@ class RegistrationForm(BaseRegistrationForm):
     pic = fields.FileField(
         "Picture Profile", validators=[FileAllowed(["png", "jpg"], "allow png and jpg")]
     )
-    favorite_types = fields.SelectMultipleField("Favorite Types of Restaurants", choices=TYPE_CORPUS)
+    preferred_types = fields.SelectMultipleField("preferred Types of Restaurants", choices=TYPE_CORPUS)
 
 
 # Define the user login form
@@ -80,4 +80,5 @@ class ProfileForm(BaseProfileForm):
     pic = fields.FileField(
         "Picture Profile", validators=[FileAllowed(["png", "jpg"], "allow png and jpg")]
     )
-    favorite_types = fields.SelectMultipleField("Favorite Types of Restaurants", choices=TYPE_CORPUS)
+    preferred_types = fields.SelectMultipleField("Preferred Types of Restaurants", choices=TYPE_CORPUS)
+    preferred_prices = fields.SelectMultipleField("Preferred Prices", choices=PRICE_CHOICES)

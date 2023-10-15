@@ -4,8 +4,13 @@
 {% block content %}
     <div class="ui raised segment">
       <div class="ui feed">
-        {{ message_renderer.BotMessage(result, status, df, df_exist, is_openning) }}
-        {{ message_renderer.UserMessage(input, current_user) }}
+        {% for message in chat.messages %}
+          {% if message.sender == "bot" %}
+            {{ message_renderer.BotMessage(message, status, df, df_exist, is_openning) }}
+          {% else %}
+            {{ message_renderer.UserMessage(message, current_user) }}
+          {% endif %}
+        {% endfor %}
         <div class="ui teal message center aligned">
           <form method="POST">
             <div class="ui action fluid transparent input">
@@ -22,7 +27,7 @@
 {% endblock %}
 
 {% block additional_js %}
-<script>
-  window.top.location.href="#input";
-</script>
+  <script>
+    window.top.location.href = "#input";
+  </script>
 {% endblock %}

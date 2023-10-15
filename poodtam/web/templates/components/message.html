@@ -1,5 +1,5 @@
-{% macro UserMessage(input, current_user) %}
-<div class="event">
+{% macro UserMessage(message, current_user) %}
+<div class="event" id="{{ message.created_date }}">
     <div class="label" style="padding-top: 10px">
       {% if current_user.get_picture() %}
         <img class="ui big avatar image" src="{{ current_user.get_picture() }}">
@@ -10,7 +10,7 @@
     <div class="content">
       <div class="ui basic huge teal label">
         <div class="ui basic left aligned segment">
-          {{ input }}
+          {{ message.text }}
         </div>
       </div>
     </div>
@@ -18,19 +18,20 @@
 {% endmacro %}
 
 {% macro BotMessage(message, status, df, df_exist, is_openning) %}
-<div class="event">
+<div class="event" id="{{ message.created_date }}">
     <div class="label" style="padding-top: 10px">
       <i class="big circular colored orange inverted cat icon"></i>
     </div>
     <div class="content">
       <div class="ui basic huge {{ 'red' if not status else 'orange' }}  label">
-        <div class="ui basic left aligned segment">
-          {{ message | replace('\n', '<br>') | safe}}
-        </div>
-        {% if status == 'completed' %}
-          {% if df_exist %}
-            <div class="ui basic segment left aligned">
-              {% for row, data in df.iterrows() %}
+        {% if message.type == "text" %}
+          <div class="ui basic left aligned segment">
+            {{ message.text | replace('\n', '<br>') | safe}}
+          </div>
+        {% elif message.type == 'dataframe' %}
+          <div class="ui basic segment left aligned">
+            {% if not message.get_dataframe().empty %}
+              {% for row, data in message.get_dataframe().iterrows() %}
                 <div class="ui message">
                   <p>
                     <h3 class="ui header">{{ data['name'] }}</h3> 
@@ -64,8 +65,10 @@
                   </p>
                 </div>
               {% endfor %}
-            </div>
-          {% endif %}
+            {% else %}
+              Can not read DataFrame
+            {% endif %}
+          </div>
         {% endif %}
       </div>
     </div>

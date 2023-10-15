@@ -242,7 +242,7 @@ def get_answer_choose_period(input):
     if not current_df.empty:
         answer = f"Here is a list of restaurants we think are right for you. {random.choice(HAPPY_EMOJI_CHOICE)}"
     else:
-        answer = f"Sorry <b>{random.choice(HAPPY_EMOJI_CHOICE)}</b> We couldn't find any restaurants open during the time you selected. ({input}) <br>Here are our recommended restaurants. Hope you like it. {RANDOM_HAPPY_EMOJI}"
+        answer = f"Sorry <b>{random.choice(HAPPY_EMOJI_CHOICE)}</b> We couldn't find any restaurants open during the time you selected. ({input}) <br>Here are our recommended restaurants. Hope you like it. {HAPPY_EMOJI_CHOICE}"
         current_df = unquery_df.copy()
 
     status = "completed"

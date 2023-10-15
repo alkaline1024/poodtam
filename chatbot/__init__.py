@@ -1,153 +1,19 @@
-import datetime
+import os
 import re
 import requests
-import random
-from lxml import html
-import pandas as pd
-
-# module selenium
 import time
+import random
+import datetime
+
+import pandas as pd
 import numpy as np
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-from sentence_transformers import SentenceTransformer, util
 
-import os
+from lxml import html
 
-model = SentenceTransformer(
-    "sentence-transformers/distiluse-base-multilingual-cased-v2"
-)
-df = pd.read_excel("chatbot/csv/Hatyai_restaurant.xlsx")
+from .dataset import GREETING_CORPUS, TYPE_CORPUS, ANYPRICE_CORPUS, LOW_PRICE_CORPUS, MEDIUM_PRICE_CORPUS, HIGH_PRICE_CORPUS, PRICE_RANGE_CORPUS, ANYTIME_CORPUS, SPECIFIC_TIME_CORPUS, TIME_CORPUS, RESET_CORPUS, ALL_CORPUS, GREETING_CHOICE, ACCEPTED_CHOICE, SAD_EMOJI_CHOICE, HAPPY_EMOJI_CHOICE, RECOMMAND_CHOICE, LABEL_COLORS
+from .dataset import df
 
-
-GREETING_CORPUS = [
-    "เอาใหม่",
-    "สวัสดี",
-    "สวัสดีค่ะ",
-    "สวัสดีครับ",
-    "สวัสดีคับ",
-    "สวัสดีงับ",
-    "ว่าไง",
-    "หืมมม...",
-    "ดี",
-    "ดีจ้า",
-    "ไง",
-    "โย่ว",
-    "hello",
-    "hi",
-    "hey",
-    "hola",
-    "good morning",
-    "good afternoon",
-    "what sup",
-    "what's up",
-]
-
-df_types = df["type"].str.split(", ").tolist()
-TYPE_CORPUS = list(set([word for sublist in df_types for word in sublist]))
-
-
-ANYPRICE_CORPUS = [
-    "all",
-    "all price",
-    "anyprice",
-    "any price",
-    "any",
-    "every price",
-    "not specific",
-]
-LOW_PRICE_CORPUS = [
-    "lowest price",
-    "low",
-    "lower",
-    "less",
-    "min",
-    "minimun price",
-    "less than 100 baht",
-]
-MEDIUM_PRICE_CORPUS = [
-    "medium price",
-    "medium",
-    "average",
-    "normal price",
-    "normal",
-    "betweem 100 baht and 250 baht",
-]
-HIGH_PRICE_CORPUS = [
-    "highest price",
-    "higher",
-    "high",
-    "maximum price",
-    "max",
-    "more than 250 baht",
-]
-
-PRICE_RANGE_CORPUS = (
-    LOW_PRICE_CORPUS + MEDIUM_PRICE_CORPUS + HIGH_PRICE_CORPUS + ANYPRICE_CORPUS
-)
-
-
-ANYTIME_CORPUS = [
-    "any time",
-    "anytime",
-    "alltime",
-    "allday",
-    "all day",
-    "everytime",
-    "not specific",
-]
-SPECIFIC_TIME_CORPUS = [
-    "select",
-    "select time",
-    "choose",
-    "i'll choose",
-    "ill choose",
-    "i will choose",
-    "choose myself",
-    "myself",
-]
-TIME_CORPUS = ANYTIME_CORPUS + SPECIFIC_TIME_CORPUS
-UNNECESSARY_WORDS = [
-    "give",
-    "me",
-    "please",
-    "i",
-    "want",
-    "restaurant",
-    "store",
-    "some",
-    "can",
-    "you",
-    "type",
-]
-
-
-RESET_CORPUS = [
-    "reset",
-    "restart",
-    "again",
-]
-
-ALL_CORPUS = GREETING_CORPUS + TYPE_CORPUS + PRICE_RANGE_CORPUS + TIME_CORPUS
-
-GREETING_CHOICE = ["Hey ", "Hello ", "Hi " "What's up ", "Greeting "]
-ACCEPTED_CHOICE = ["Alright", "Got it", "Got it", "Roger that", "Yes, sir"]
-SAD_EMOJI_CHOICE = [";-;", ";--;", ";---;", ";___;", ";_;", ";^;", ":(", "(;__;)", "(._.)"]
-HAPPY_EMOJI_CHOICE = ["! ", ". ", ". ^ ^ ", " :D ", "! :) ", "! :D ", ":3 ", "<3 ", "\o/ "]
-RECOMMAND_CHOICE = ["What kind of restaurant would you like me to recommend?","What kind of restaurant do you like?",]
-
-LABEL_COLORS = [
-    "orange",
-    "yellow",
-    "olive",
-    "green",
-    "teal",
-    "blue",
-    "violet",
-    "purple",
-    "pink",
-    "brown",
-]
+from .sentence_model import calculate_similarity_score
 
 
 def generate_html_list(list):
@@ -159,28 +25,6 @@ def generate_html_list(list):
 
 def generate_grey_text(text):
     return f'<span class="ui grey text">{text}</span>'
-
-def calculate_similarity_score(question, corpus):
-    lst_question = question.lower().split()
-    for word in UNNECESSARY_WORDS:
-        if word in lst_question:
-            lst_question.remove(word)
-
-    cleaned_question = "".join(lst_question)
-
-    question_vec = model.encode(
-        cleaned_question, convert_to_tensor=True, normalize_embeddings=True
-    )
-    corpus_vec = model.encode(corpus, convert_to_tensor=True, normalize_embeddings=True)
-
-    cosine_scores = util.cos_sim(question_vec, corpus_vec)
-    entity_vector = np.array(cosine_scores)
-
-    score = np.max(entity_vector)
-    if score >= 0.6:
-        match_entity = corpus[np.argmax(entity_vector)]
-        return match_entity, score
-    return None, score
 
 
 current_df = df.copy()

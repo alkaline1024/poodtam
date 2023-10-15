@@ -21,7 +21,7 @@ class User(me.Document, UserMixin):
     roles = me.ListField(me.StringField(), default=["user"])
 
     # bot prediction
-    favorite_types = me.ListField(me.StringField(), choices=TYPE_CORPUS)
+    preferred_types = me.ListField(me.StringField(), choices=TYPE_CORPUS)
 
     created_date = me.DateTimeField(required=True, default=datetime.datetime.now)
     updated_date = me.DateTimeField(required=True, default=datetime.datetime.now)

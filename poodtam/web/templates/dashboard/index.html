@@ -15,15 +15,24 @@
         {% endfor %}
       </div>
     </div>
-    <div class="ui segment">
-      <!-- Quick Reply #1 -->
-      <a class="ui circular teal large basic label" onmouseover="this.style = 'background-color: #00b5ad; color: white'" onmouseleave="this.style = 'background-color: none; color: #00b5ad'"
+    <div class="ui fluid segment">
+      <!-- Quick Reply #List By Preferred -->
+      <a class="ui floating info small compact message" 
+        onmouseover="this.style = 'background-color: #276F86; color: white'; $('.recommand.send.icon')[0].style.display = 'inline'" 
+        onmouseleave="this.style = 'background-color: none; color: #276F86'; $('.recommand.send.icon')[0].style.display = 'none'"
         href="{{ url_for('dashboard.submit_message', input='Recommand restaurant for me') }}" >
-        Recommand restaurant for me
+        <p><b>Recommand restaurant for me</b> &ensp; <i class="recommand send icon" style="display: none"></i></p>
+        List preferred restaurants currently open
       </a>
-      <!-- Quick Reply #2 -->
+      &ensp;
+      <!-- Quick Reply #List By Type -->
       <div class="ui pointing scrolling dropdown">
-        <a class="ui circular teal large basic label" onmouseover="this.style = 'background-color: #00b5ad; color: white'" onmouseleave="this.style = 'background-color: none; color: #00b5ad'">Give me (type) restaurant</a>
+        <a class="ui floating info small compact message" 
+          onmouseover="this.style = 'background-color: #276F86; color: white'; $('.list-type.list.icon')[0].style.display = 'inline'" 
+          onmouseleave="this.style = 'background-color: none; color: #276F86'; $('.list-type.list.icon')[0].style.display = 'none'">
+          <p><b>Give me (type) restaurant</b> &ensp; <i class="list-type list icon" style="display: none"></i></p>
+          List restaurants by selected type 
+        </a>
         <div class="menu">
           <div class="header">
             List Restaurant by Type
@@ -37,17 +46,25 @@
           {% endfor %}
         </div>
       </div>
-      <a class="ui circular teal large basic label" onmouseover="this.style = 'background-color: #00b5ad; color: white'" onmouseleave="this.style = 'background-color: none; color: #00b5ad'" 
-        href="{{ url_for('dashboard.submit_message', input='Reset') }}" >
-        Reset
-      </a>
-      <!-- Quick Reply #3 -->
-      <div class="ui teal message center aligned">
+      &ensp;
+      {% if chat.current_state not in ["type", "completed"] %}
+        <!-- Quick Reply #Reset -->
+        <a class="ui floating info small compact message" 
+        onmouseover="this.style = 'background-color: #276F86; color: white'; $('.reset.send.icon')[0].style.display = 'inline'" 
+        onmouseleave="this.style = 'background-color: none; color: #276F86'; $('.reset.send.icon')[0].style.display = 'none'" 
+          href="{{ url_for('dashboard.submit_message', input='Reset') }}" >
+          <p><b>Reset</b> &ensp; <i class="reset send icon" style="display: none"></i></p>
+          Start talk from beginning
+        </a>
+        &ensp;
+      {% endif %}
+      <div class="ui info message center aligned">
         <form method="GET" action="{{ url_for('dashboard.submit_message') }}">
-          <div class="ui action fluid transparent input">
+          <div class="ui fluid transparent input">
             <input type="text" name="input" id="input" placeholder="Send a message">
-            <button class="ui teal icon button">
-              <i class="send icon"></i>&ensp;Submit
+            <button class="ui primary icon button">
+              Submit
+              <i class="send icon"></i>
             </button>
           </div>
         </form>

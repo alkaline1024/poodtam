@@ -23,6 +23,8 @@ UNNECESSARY_WORDS = [
     "for",
     "but",
     "type",
+    "best",
+    "good",
 ]
 
 model = SentenceTransformer(

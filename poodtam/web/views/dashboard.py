@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import current_user, login_required
 
 from chatbot import chat_answer
@@ -19,45 +19,39 @@ def is_openning(opened_time, closed_time):
     return False
 
 
-result = "Ask me..."
 status = "process"
-df = None
 
-
-
-@module.route("/", methods=["GET", "POST"])
+@module.route("/", methods=["GET"])
 @login_required
 def index():
+    global status
     user = current_user._get_current_object()
     chat = models.Chat.objects(user=user).first()
     if not chat:
         chat = models.Chat()
         chat.create_bot_message("text", "Ask me...")
         chat.user = user
-
-    global result
-    global status
-    global df
-
-    input = request.form.get("input", None)
-    if input:
-        chat.create_user_message("text", input)
-
-        result, status, df = chat_answer(input)
-
-        chat.create_bot_message("text", result)
-        if status == "completed" and df is not None:
-            chat.create_bot_message("dataframe", str(df.to_json()))
-
     chat.save()
-
     return render_template(
         "/dashboard/index.html",
         chat=chat,
-        input=input,
-        result=result,
         status=status,
-        df=df,
-        df_exist=df is not None,
         is_openning=is_openning,
     )
+
+@module.route("/submit_message", methods=["POST"])
+def submit_message():
+    global status
+    user = current_user._get_current_object()
+    chat = models.Chat.objects(user=user).first()
+    input = request.form.get("input", None)
+    if input:
+        chat.create_user_message("text", input)
+        
+        result, status, df = chat_answer(input)
+        chat.create_bot_message("text", result)
+        if status == "completed" and df is not None:
+            chat.create_bot_message("dataframe", str(df.to_json()))
+    
+    chat.save()
+    return redirect(url_for('dashboard.index'))

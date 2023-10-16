@@ -5,16 +5,23 @@ from selenium.webdriver.common.by import By
 from sentence_transformers import SentenceTransformer, util
 
 UNNECESSARY_WORDS = [
+    "restaurants",
+    "restaurant",
+    "stores",
+    "store",
+    "shops"
+    "shop",
+    "please",
     "give",
     "me",
-    "please",
     "i",
     "want",
-    "restaurant",
-    "store",
     "some",
     "can",
     "you",
+    "just",
+    "for",
+    "but",
     "type",
 ]
 
@@ -27,7 +34,7 @@ def calculate_similarity_score(question, corpus):
         if word in lst_question:
             lst_question.remove(word)
 
-    cleaned_question = "".join(lst_question)
+    cleaned_question = " ".join(lst_question)
 
     question_vec = model.encode(
         cleaned_question, convert_to_tensor=True, normalize_embeddings=True

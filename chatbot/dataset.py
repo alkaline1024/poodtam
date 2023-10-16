@@ -27,7 +27,9 @@ GREETING_CORPUS = [
 
 # *** TYPE DATASET ***
 df_types = df["type"].str.split(", ").tolist()
-TYPE_CORPUS = list(set([word for sublist in df_types for word in sublist]))
+restaurant_types = list(set([word for sublist in df_types for word in sublist]))
+restaurant_types.sort()
+TYPE_CORPUS = restaurant_types
 
 # *** PRICE DATASET ***
 PRICE_CHOICES = [

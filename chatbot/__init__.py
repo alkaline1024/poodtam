@@ -35,6 +35,8 @@ def chat_answer(chat, input):
         chat.current_state = "type"
         chat.save()
         return reset_answer
+    
+    
 
 
     if chat.current_state == "none":
@@ -215,7 +217,7 @@ def get_answer_choose_period(chat, input):
             chat.save()
             return answer
 
-    unquery_df = current_df.copy()
+    unquery_time_df = current_df.copy()
     current_df = current_df[
         (current_df["opening time"] <= select_time)
         & (select_time <= current_df["closing time"])
@@ -225,7 +227,7 @@ def get_answer_choose_period(chat, input):
         answer = f"Here is a list of restaurants we think are right for you. {random.choice(HAPPY_EMOJI_CHOICE)}"
     else:
         answer = f"Sorry <b>{random.choice(HAPPY_EMOJI_CHOICE)}</b> We couldn't find any restaurants open during the time you selected. ({input}) <br>Here are our recommended restaurants. Hope you like it. {HAPPY_EMOJI_CHOICE}"
-        current_df = unquery_df.copy()
+        current_df = unquery_time_df.copy()
 
     chat.current_state = "completed"
     chat.save()

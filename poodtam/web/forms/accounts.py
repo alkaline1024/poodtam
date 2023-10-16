@@ -43,7 +43,7 @@ class RegistrationForm(BaseRegistrationForm):
     pic = fields.FileField(
         "Picture Profile", validators=[FileAllowed(["png", "jpg"], "allow png and jpg")]
     )
-    preferred_types = fields.SelectMultipleField("preferred Types of Restaurants", choices=TYPE_CORPUS)
+    preferred_types = fields.SelectMultipleField("Preferred Types of Restaurants", choices=TYPE_CORPUS)
     preferred_prices = fields.SelectMultipleField("Preferred Prices", choices=PRICE_CHOICES)
 
 

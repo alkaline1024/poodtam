@@ -55,7 +55,9 @@ def register():
 
     if oauth.create_user(form):
         return redirect(url_for("accounts.login"))
-    return redirect(url_for("accounts.login", login_status="failed"))
+    
+    flash("Username already exists")
+    return render_template("accounts/register.html", form=form)
 
 
 @module.route("/edit-profile", methods=["GET", "POST"])

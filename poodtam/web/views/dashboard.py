@@ -3,6 +3,7 @@ from flask_login import current_user, login_required
 
 from chatbot import chat_answer
 from poodtam import models
+from chatbot import TYPE_CORPUS
 
 import datetime
 import time
@@ -34,6 +35,7 @@ def index():
     chat.save()
     return render_template(
         "/dashboard/index.html",
+        RESTAURANT_TYPE=TYPE_CORPUS,
         chat=chat,
         status=status,
         is_openning=is_openning,

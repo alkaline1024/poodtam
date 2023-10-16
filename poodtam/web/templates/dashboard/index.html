@@ -2,16 +2,46 @@
 {% import "/components/message.html" as message_renderer %}
 
 {% block content %}
-  <div class="ui raised padded secondary segment">
+  <div class="ui raised padded secondary fitted segment">
     <div class="ui hidden divider"></div>
-    <div class="ui feed">
-      {% for message in chat.messages %}
-        {% if message.sender == "bot" %}
-          {{ message_renderer.BotMessage(message, status, is_openning) }}
-        {% else %}
-          {{ message_renderer.UserMessage(message, current_user) }}
-        {% endif %}
-      {% endfor %}
+    <div class="ui basic segment">
+      <div class="ui feed">
+        {% for message in chat.messages %}
+          {% if message.sender == "bot" %}
+            {{ message_renderer.BotMessage(message, current_user, status, is_openning) }}
+          {% else %}
+            {{ message_renderer.UserMessage(message, current_user) }}
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    <div class="ui segment">
+      <!-- Quick Reply #1 -->
+      <a class="ui circular teal large basic label" onmouseover="this.style = 'background-color: #00b5ad; color: white'" onmouseleave="this.style = 'background-color: none; color: #00b5ad'"
+        href="{{ url_for('dashboard.submit_message', input='Recommand restaurant for me') }}" >
+        Recommand restaurant for me
+      </a>
+      <!-- Quick Reply #2 -->
+      <div class="ui pointing scrolling dropdown">
+        <a class="ui circular teal large basic label" onmouseover="this.style = 'background-color: #00b5ad; color: white'" onmouseleave="this.style = 'background-color: none; color: #00b5ad'">Give me (type) restaurant</a>
+        <div class="menu">
+          <div class="header">
+            List Restaurant by Type
+          </div>
+          <div class="ui icon search input">
+            <i class="search icon"></i>
+            <input type="text" placeholder="Search restaurant type...">
+          </div>
+          {% for type in RESTAURANT_TYPE %}
+            <a class="item" href="/submit_message?input=Give me {{ type }} restaurant">{{ type }}</a>
+          {% endfor %}
+        </div>
+      </div>
+      <a class="ui circular teal large basic label" onmouseover="this.style = 'background-color: #00b5ad; color: white'" onmouseleave="this.style = 'background-color: none; color: #00b5ad'" 
+        href="{{ url_for('dashboard.submit_message', input='Reset') }}" >
+        Reset
+      </a>
+      <!-- Quick Reply #3 -->
       <div class="ui teal message center aligned">
         <form method="GET" action="{{ url_for('dashboard.submit_message') }}">
           <div class="ui action fluid transparent input">
@@ -24,15 +54,30 @@
       </div>
     </div>
   </div>
-
   {% include "/components/back-to-top.html" %}
 {% endblock %}
 
 {% block additional_js %}
   <script>
+    // <!-- MOCK LOADING USER MESSAGE -->
     window.top.location.href = "#input";
-    user_input = document.getElementById("{{ chat.messages[-1].uid }}");
-    user_input.style.display = "none";
-    $(user_input).transition('fade down');
+    user_input = document.getElementById("{{ chat.messages[-2].uid }}").style.display = "none";
+    setTimeout(function() {
+      user_input = document.getElementById("{{ chat.messages[-2].uid }}");
+      user_input.style.display = "none";
+      $(user_input).transition('fade up');
+      window.scrollTo(0, ScreenHeight);
+    },100);
+    // <!-- MOCK LOADING BOT RESPONSE MESSAGE -->
+    bot_response = document.getElementById("{{ chat.messages[-1].uid }}").style.display = "none";
+    setTimeout(function() {
+      bot_response = document.getElementById("{{ chat.messages[-1].uid }}");
+      bot_response.style.display = "none";
+      $(bot_response).transition('fade up');
+      window.scrollTo(0, ScreenHeight);
+    },1000);
+  </script>
+  <script>
+    $('.ui.dropdown').dropdown()
   </script>
 {% endblock %}

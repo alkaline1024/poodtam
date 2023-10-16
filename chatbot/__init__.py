@@ -39,6 +39,8 @@ def chat_answer(input):
 
     answer, status =  check_input_reset(input)
     if answer:
+        current_df = df.copy()
+        current_state = None
         return answer, status, current_df
 
 

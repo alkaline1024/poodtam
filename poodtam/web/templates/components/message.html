@@ -1,6 +1,6 @@
 {% macro UserMessage(message, current_user) %}
 <div class="event" id="{{ message.uid }}">
-    <div class="label" style="padding-top: 10px">
+    <div class="label">
       {% if current_user.get_picture() %}
         <img class="ui big avatar image" src="{{ current_user.get_picture() }}">
       {% else %}
@@ -8,69 +8,114 @@
       {% endif %}
     </div>
     <div class="content">
-      <div class="ui basic huge teal label">
-        <div class="ui basic left aligned segment">
-          {{ message.text }}
+      <div class="summary">
+        <span class="ui teal text">
+          {{ current_user.name }}
+        </span>
+        <div class="date">
+          {{ message.created_date.strftime("%d %b %y %H:%M") }}
+        </div>
+      </div>
+      <div class="ui fitted compact basic raised segment">
+        <div class="ui basic huge label">
+          <div class="ui basic left aligned segment">
+            {{ message.text }}
+          </div>
         </div>
       </div>
     </div>
   </div>
 {% endmacro %}
 
-{% macro BotMessage(message, status, is_openning) %}
+{% macro BotMessage(message, current_user, status, is_openning) %}
 <div class="event" id="{{ message.uid }}">
-    <div class="label" style="padding-top: 10px">
+    <div class="label">
       <i class="big circular colored orange inverted cat icon"></i>
     </div>
     <div class="content">
-      <div class="ui basic huge {{ 'red' if not status else 'orange' }}  label">
-        {% if message.type == "text" %}
-          <div class="ui basic left aligned segment">
-            {{ message.text | replace('\n', '<br>') | safe}}
-          </div>
-        {% elif message.type == 'dataframe' %}
-          <div class="ui basic segment left aligned">
-            {% if not message.get_dataframe().empty %}
-              {% for row, data in message.get_dataframe().iterrows() %}
-                <div class="ui message">
-                  <p>
-                    <h3 class="ui header">{{ data['name'] }}</h3> 
-                    {% for type in data['type'].split(", ") %}
-                      <div class="ui label">{{ type }}</div>
-                    {% endfor %}
-                  </p>
-                  <div class="item">
-                  Opening Time {{ data['opening time'].strftime("%H:%M") }} - {{ data['closing time'].strftime("%H:%M") }} {{ 'Everyday' if data['closed on'] == "No" else "Closed on " + data["closed on"] }}
-                    {% if is_openning(data['opening time'], data['closing time']) %}
-                    <div class="ui basic small green left pointing label">Now opened</div>
+      <div class="summary">
+        <span class="ui orange text">
+          Poodtam
+        </span>
+        <div class="date">
+          {{ message.created_date.strftime("%d %b %y %H:%M") }}
+        </div>
+      </div>
+      <div class="ui fitted compact basic raised segment">
+        <div class="ui basic huge label">
+          {% if message.type == "text" %}
+            <div class="ui basic left aligned segment">
+              {{ message.text | replace('\n', '<br>') | safe}}
+            </div>
+          {% elif message.type == 'dataframe' %}
+            <div class="ui basic segment left aligned">
+              {% if not message.get_dataframe().empty %}
+                {% for row, data in message.get_dataframe().iterrows() %}
+                  <div class="ui message">
+                    <p>
+                      <h3 class="ui header" style="margin-bottom: 0.5em;">{{ data['name'] }}</h3>
+                      {% for type in data['type'].split(", ") %}
+                        {% if type in current_user.preferred_types %}
+                          <div class="ui teal label link pop" style="cursor: default;" data-content="You liked this type" data-variation="inverted tiny" data-position="bottom center">
+                            {{ type }}
+                          </div>
+                        {% endif %}
+                      {% endfor %}
+                      {% for type in data['type'].split(", ") %}
+                        {% if type not in current_user.preferred_types %}
+                          <div class="ui grey label" style="cursor: default;">
+                            {{ type }}
+                          </div>
+                        {% endif %}
+                      {% endfor %}
+                    </p>
+                    <div class="item" style="font-weight: 500">
+                      Opening Time
+                      {{ data['opening time'].strftime("%H:%M") }} - {{ data['closing time'].strftime("%H:%M") }}
+                      |
+                      {% if data['closed on'] == "No" %}
+                        Everyday
                       {% else %}
-                    <div class="ui basic small red left pointing label">Now Closed</div>
-                    {% endif %}
-                  </div>
-                  <p>
-                    <div class="item">
-                      Price range
-                      {% if data["price"] == "฿" %}
-                      Less than 100 Baht <div class="ui olive small basic label tag" style="font-weight: 400 !important;">฿</div>
-                      {% elif data["price"] == "฿฿" %}
-                      100 Baht - 250 Baht <div class="ui yellow small basic label tag" style="font-weight: 400 !important;">฿฿</div>
-                      {% else %}
-                      More than 250 Baht <div class="ui orange small basic label tag" style="font-weight: 400 !important;">฿฿฿</div>
+                        Closed on {{ data["closed on"] }}
+                      {% endif%}
+                      {% if is_openning(data['opening time'], data['closing time']) %}
+                      <div class="ui basic green left pointing label">Now opened</div>
+                        {% else %}
+                      <div class="ui basic red left pointing label">Now Closed</div>
                       {% endif %}
-                    </div> 
-                  </p>
-                  <p>
-                    <div class="item"><a><i class="phone alternate icon"></i> {{ '0' if data["phone"][0] | string not in ["0", "-"] }}{{ data["phone"] | string }}</a></div>
-                    <div class="item"><a href="{{ data['address'] }}" target="_blank" ><i class="map marker alternate icon"></i>View on Google Maps</a></div>
-                  </p>
-                </div>
-              {% endfor %}
-            {% else %}
-              Can not read DataFrame
-            {% endif %}
-          </div>
-        {% endif %}
+                    </div>
+                    <p>
+                      <div class="item" style="font-weight: 500">
+                        Price range
+                        {% if data["price"] == "฿" %}
+                        Less than 100 Baht&ensp;<div class="ui basic grey label tag" style="font-weight: 600 !important;">฿</div>
+                        {% elif data["price"] == "฿฿" %}
+                        100 Baht - 250 Baht&ensp;<div class="ui basic grey label tag" style="font-weight: 600 !important;">฿฿</div>
+                        {% else %}
+                        More than 250 Baht&ensp;<div class="ui basic grey label tag" style="font-weight: 600 !important;">฿฿฿</div>
+                        {% endif %}
+                      </div> 
+                    </p>
+                    <p>
+                      <div class="item"><a><i class="phone alternate icon"></i> {{ '0' if data["phone"][0] | string not in ["0", "-"] }}{{ data["phone"] | string }}</a></div>
+                      <div class="item"><a href="{{ data['address'] }}" target="_blank" ><i class="map marker alternate icon"></i>View on Google Maps</a></div>
+                    </p>
+                  </div>
+                {% endfor %}
+              {% else %}
+                Can not read DataFrame
+              {% endif %}
+            </div>
+          {% endif %}
+        </div>
       </div>
     </div>
   </div>
+
+  <script>
+    $('.link.pop').popup({
+      delay: {
+      show: 500,
+    }});
+  </script>
 {% endmacro %}

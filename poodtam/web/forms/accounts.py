@@ -44,6 +44,7 @@ class RegistrationForm(BaseRegistrationForm):
         "Picture Profile", validators=[FileAllowed(["png", "jpg"], "allow png and jpg")]
     )
     preferred_types = fields.SelectMultipleField("preferred Types of Restaurants", choices=TYPE_CORPUS)
+    preferred_prices = fields.SelectMultipleField("Preferred Prices", choices=PRICE_CHOICES)
 
 
 # Define the user login form

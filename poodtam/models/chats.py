@@ -15,8 +15,8 @@ class Message(me.EmbeddedDocument):
         if self.type == "dataframe":
             try:
                 df = pd.read_json(io.StringIO(self.text))
-                df['opening time'] = pd.to_datetime(df['opening time'])
-                df['closing time'] = pd.to_datetime(df['closing time'])
+                df['opening time'] = pd.to_datetime(df['opening time'], format="%H:%M:%S")
+                df['closing time'] = pd.to_datetime(df['closing time'], format="%H:%M:%S")
                 return df
             except Exception as error:
                 return pd.DataFrame([])

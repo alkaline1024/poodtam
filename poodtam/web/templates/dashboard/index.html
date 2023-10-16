@@ -8,7 +8,7 @@
       <div class="ui feed">
         {% for message in chat.messages %}
           {% if message.sender == "bot" %}
-            {{ message_renderer.BotMessage(message, current_user, status, is_openning) }}
+            {{ message_renderer.BotMessage(message, current_user, is_openning) }}
           {% else %}
             {{ message_renderer.UserMessage(message, current_user) }}
           {% endif %}

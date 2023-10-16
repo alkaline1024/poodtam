@@ -30,6 +30,9 @@ class Chat(me.Document):
     user = me.ReferenceField("User", required=True)
     messages = me.EmbeddedDocumentListField(Message)
 
+    current_df = me.StringField()
+    current_state = me.StringField(choices=["none", "type", "price", "time", "choose_period", "completed", "error"], required=True, default="none")
+
     created_date = me.DateTimeField(required=True, default=datetime.datetime.now)
     updated_date = me.DateTimeField(required=True, default=datetime.datetime.now)
 
@@ -41,3 +44,16 @@ class Chat(me.Document):
         message = Message(type=type, text=text, sender="user")
         self.messages.append(message)
 
+    def save_current_df(self, df):
+        if df is not None:
+            self.current_df = str(df.to_json())
+            self.save()
+        
+    def get_current_df(self):
+        try:
+            df = pd.read_json(io.StringIO(self.current_df))
+            return df
+        except Exception as error:
+            print(error)
+            
+        return pd.DataFrame([])

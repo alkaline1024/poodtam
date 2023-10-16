@@ -20,12 +20,9 @@ def is_openning(opened_time, closed_time):
     return False
 
 
-status = "process"
-
 @module.route("/", methods=["GET"])
 @login_required
 def index():
-    global status
     user = current_user._get_current_object()
     chat = models.Chat.objects(user=user).first()
     if not chat:
@@ -37,23 +34,21 @@ def index():
         "/dashboard/index.html",
         RESTAURANT_TYPE=TYPE_CORPUS,
         chat=chat,
-        status=status,
         is_openning=is_openning,
     )
 
 @module.route("/submit_message", methods=["GET"])
 def submit_message():
-    global status
     user = current_user._get_current_object()
     chat = models.Chat.objects(user=user).first()
     input = request.args.get("input", None)
     if input:
         chat.create_user_message("text", input)
 
-        result, status, df = chat_answer(input)
+        result = chat_answer(chat, input)
         chat.create_bot_message("text", result)
-        if status == "completed" and df is not None:
-            chat.create_bot_message("dataframe", str(df.to_json()))
+        if chat.current_state == "completed" and chat.get_current_df() is not None:
+            chat.create_bot_message("dataframe", str(chat.get_current_df().to_json()))
     
     chat.save()
     return redirect(url_for('dashboard.index'))

@@ -13,7 +13,7 @@
         {% endif %}
       {% endfor %}
       <div class="ui teal message center aligned">
-        <form method="POST" action="{{ url_for('dashboard.submit_message') }}">
+        <form method="GET" action="{{ url_for('dashboard.submit_message') }}">
           <div class="ui action fluid transparent input">
             <input type="text" name="input" id="input" placeholder="Send a message">
             <button class="ui teal icon button">
@@ -31,8 +31,8 @@
 {% block additional_js %}
   <script>
     window.top.location.href = "#input";
-    user_input = document.getElementById("{{ chat.messages[-1].created_date }}");
+    user_input = document.getElementById("{{ chat.messages[-1].uid }}");
     user_input.style.display = "none";
-    $(user_input).transition('fade up');
+    $(user_input).transition('fade down');
   </script>
 {% endblock %}

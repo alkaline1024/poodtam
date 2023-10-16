@@ -1,5 +1,5 @@
 {% macro UserMessage(message, current_user) %}
-<div class="event" id="{{ message.created_date }}">
+<div class="event" id="{{ message.uid }}">
     <div class="label" style="padding-top: 10px">
       {% if current_user.get_picture() %}
         <img class="ui big avatar image" src="{{ current_user.get_picture() }}">
@@ -18,7 +18,7 @@
 {% endmacro %}
 
 {% macro BotMessage(message, status, is_openning) %}
-<div class="event" id="{{ message.created_date }}">
+<div class="event" id="{{ message.uid }}">
     <div class="label" style="padding-top: 10px">
       <i class="big circular colored orange inverted cat icon"></i>
     </div>

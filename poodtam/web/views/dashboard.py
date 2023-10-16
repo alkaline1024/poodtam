@@ -39,15 +39,15 @@ def index():
         is_openning=is_openning,
     )
 
-@module.route("/submit_message", methods=["POST"])
+@module.route("/submit_message", methods=["GET"])
 def submit_message():
     global status
     user = current_user._get_current_object()
     chat = models.Chat.objects(user=user).first()
-    input = request.form.get("input", None)
+    input = request.args.get("input", None)
     if input:
         chat.create_user_message("text", input)
-        
+
         result, status, df = chat_answer(input)
         chat.create_bot_message("text", result)
         if status == "completed" and df is not None:

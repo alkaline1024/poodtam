@@ -3,8 +3,10 @@ import pandas as pd
 import datetime
 import json
 import io
+from bson.objectid import ObjectId
 
 class Message(me.EmbeddedDocument):
+    uid = me.ObjectIdField(required=True, default=ObjectId)
     type = me.StringField(required=True, choices=["text", "dataframe"])
     text = me.StringField(required=True)
     sender = me.StringField(choices=["user", "bot"], required=True)

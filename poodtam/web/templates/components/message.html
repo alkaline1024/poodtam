@@ -60,7 +60,7 @@
                     </div> 
                   </p>
                   <p>
-                    <div class="item"><a><i class="phone alternate icon"></i> {{ data["phone"] | string }}</a></div>
+                    <div class="item"><a><i class="phone alternate icon"></i> {{ '0' if data["phone"][0] | string not in ["0", "-"] }}{{ data["phone"] | string }}</a></div>
                     <div class="item"><a href="{{ data['address'] }}" target="_blank" ><i class="map marker alternate icon"></i>View on Google Maps</a></div>
                   </p>
                 </div>

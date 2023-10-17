@@ -1,10 +1,12 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import current_user, login_required
 
-from chatbot import chat_answer
 from poodtam import models
-from chatbot import TYPE_CORPUS
+from chatbot import chat_answer
+from chatbot import TYPE_CORPUS as RESTAURANT_TYPE
+from chatbot.dataset import EXAMPLE_SENTENCE
 
+import random
 import datetime
 import time
 import pandas as pd
@@ -18,7 +20,6 @@ def is_openning(opened_time, closed_time):
     if now_time > opened_time.time() and now_time < closed_time.time():
         return True
     return False
-
 
 @module.route("/", methods=["GET"])
 @login_required
@@ -39,10 +40,10 @@ def index():
         chat.save()
     return render_template(
         "/dashboard/index.html",
-        RESTAURANT_TYPE=TYPE_CORPUS,
         chat=chat,
         chats=chats,
         is_openning=is_openning,
+        RESTAURANT_TYPE=RESTAURANT_TYPE,
     )
 
 @module.route("/submit_message/<chat_id>", methods=["GET"])
@@ -55,3 +56,8 @@ def submit_message(chat_id):
         chat_answer(chat, input)
     chat.save()
     return redirect(url_for('dashboard.index', chat_id=chat.id))
+
+@module.route("/random_sentence")
+def random_sentence():
+    sentence = random.choice(EXAMPLE_SENTENCE)
+    return sentence

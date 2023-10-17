@@ -110,6 +110,32 @@
 {% endmacro %}
 
 
+{% macro Random() %}
+  <!-- Quick Reply #Random -->
+  <a class="ui black icon circular label basic" 
+  onmouseover="this.style = 'background-color: black; color: white'; " 
+  onmouseleave="this.style = 'background-color: none; color: black'; "
+  onclick="randomSentence()">
+  <p><b>Random Sentence</b> &ensp;<i class="dice five icon"></i></p>
+  <!-- Start talk from beginning -->
+  </a>
+  &ensp;
+
+  <script>
+    function randomSentence() {
+      fetch('{{ url_for("dashboard.random_sentence") }}')
+        .then(response => response.text())
+        .then(randValue => {
+          $('#input')[0].value = randValue;
+          $('#input')[0].focus()
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+  </script>
+{% endmacro %}
+
 
 {% macro Reset(chat) %}
   <!-- Quick Reply #Reset -->
@@ -117,7 +143,7 @@
   onmouseover="this.style = 'background-color: #9F3A38; color: white'; " 
   onmouseleave="this.style = 'background-color: none; color: #9F3A38'; " 
   href="{{ url_for('dashboard.submit_message', chat_id=chat.id, input='Reset') }}">
-  <p><b>Reset</b> &ensp; <i class="sync icon" ></i></p>
+  <i class="sync icon" ></i> &ensp;<b>Reset</b>&ensp;
   <!-- Start talk from beginning -->
   </a>
   &ensp;

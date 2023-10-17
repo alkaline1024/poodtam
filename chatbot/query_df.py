@@ -1,4 +1,4 @@
-from .dataset import LOW_PRICE_CORPUS, MEDIUM_PRICE_CORPUS, HIGH_PRICE_CORPUS, BREAKFAST_CORPUS, LUNCH_CORPUS, DINNER_CORPUS
+from .dataset import LOW_PRICE_CORPUS, MEDIUM_PRICE_CORPUS, HIGH_PRICE_CORPUS, BREAKFAST_CORPUS, LUNCH_CORPUS, DINNER_CORPUS, NOW_TIME_CORPUS
 import datetime
 
 def query_type(df, type):
@@ -27,6 +27,8 @@ def query_in_period_time(df, chat):
     elif current_time in DINNER_CORPUS:
         print("DINNER_CORPUS")
         df = df[(df["opening time"] < datetime.time(23))]
+    elif current_time in NOW_TIME_CORPUS:
+        df = query_in_period_now()
     else:
         selected_time = chat.selected_time
         df = df[(df["opening time"] <= selected_time) & (selected_time <= df["closing time"])]

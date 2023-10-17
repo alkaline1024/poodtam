@@ -23,16 +23,16 @@
       </div>
     </div>
     <div class="ui top attached right aligned segment">
-      Current Given Information:&ensp;
-      <div class="ui brown label">
+      {{ quick_reply.Reset(chat) }} Current Given Information:&ensp;
+      <div class="ui {{ 'brown' if chat.current_type }} label">
         {{ chat.current_type.title() if chat.current_type else 'Not Selected' }}
         <div class="detail">Type</div>
       </div>
-      <div class="ui green label">
+      <div class="ui {{ 'green' if chat.current_price }} label">
         {{ chat.current_price.title() if chat.current_price else 'Not Selected' }}
         <div class="detail">Price</div>
       </div>
-      <div class="ui purple label">
+      <div class="ui {{ 'purple' if chat.current_time }} label">
         {{ chat.current_time.title() if chat.current_time else 'Not Selected' }}
         <div class="detail">Time</div>
       </div>
@@ -102,8 +102,10 @@
           </div>
         </div>
         &ensp;
+
+        {{ quick_reply.Random() }}
       {% endif %}
-      {{ quick_reply.Reset(chat) }}
+      
       <!-- INPUT START -->
       <div class="ui blue message center floating aligned">
         <form method="GET" action="{{ url_for('dashboard.submit_message', chat_id=chat.id) }}">
@@ -116,13 +118,7 @@
           </div>
         </form>
       </div>
-      <div class="ui basic segment">
-        <div class="ui list">
-          <div class="item">Apples</div>
-          <div class="item">Pears</div>
-          <div class="item">Oranges</div>
-        </div>
-      </div>
+      
       <!-- END INPUT -->
     </div>
   </div>

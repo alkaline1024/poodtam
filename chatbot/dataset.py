@@ -26,7 +26,7 @@ GREETING_CORPUS = [
 ]
 
 # *** TYPE DATASET ***
-df_types = df["type"].str.split(", ").tolist()
+df_types = df["type"].str.split(",").tolist()
 restaurant_types = list(set([word for sublist in df_types for word in sublist]))
 restaurant_types.sort()
 TYPE_CORPUS = restaurant_types
@@ -47,6 +47,7 @@ ANYPRICE_CORPUS = [
     "not specific",
 ]
 LOW_PRICE_CORPUS = [
+    "฿",
     "lowest price",
     "low",
     "lower",
@@ -56,6 +57,7 @@ LOW_PRICE_CORPUS = [
     "less than 100 baht",
 ]
 MEDIUM_PRICE_CORPUS = [
+    "฿฿",
     "medium price",
     "medium",
     "average",
@@ -64,6 +66,7 @@ MEDIUM_PRICE_CORPUS = [
     "betweem 100 baht and 250 baht",
 ]
 HIGH_PRICE_CORPUS = [
+    "฿฿฿",
     "highest price",
     "higher",
     "high",
@@ -71,7 +74,7 @@ HIGH_PRICE_CORPUS = [
     "max",
     "more than 250 baht",
 ]
-PRICE_RANGE_CORPUS = (
+PRICE_CORPUS = (
     LOW_PRICE_CORPUS + MEDIUM_PRICE_CORPUS + HIGH_PRICE_CORPUS + ANYPRICE_CORPUS
 )
 
@@ -84,6 +87,7 @@ ANYTIME_CORPUS = [
     "all day",
     "everytime",
     "not specific",
+    "currently",
 ]
 SPECIFIC_TIME_CORPUS = [
     "select",
@@ -95,7 +99,22 @@ SPECIFIC_TIME_CORPUS = [
     "choose myself",
     "myself",
 ]
-TIME_CORPUS = ANYTIME_CORPUS + SPECIFIC_TIME_CORPUS
+BREAKFAST_CORPUS = [
+    "breakfast",
+    "morning",
+]
+LUNCH_CORPUS = [
+    "lunch",
+    "noon",
+    "midday",
+]
+DINNER_CORPUS = [
+    "afternoon",
+    "dinner",
+    "night",
+    "midnight",
+]
+TIME_CORPUS = ANYTIME_CORPUS + SPECIFIC_TIME_CORPUS + BREAKFAST_CORPUS + LUNCH_CORPUS + DINNER_CORPUS
 
 
 RESET_CORPUS = [
@@ -105,7 +124,7 @@ RESET_CORPUS = [
 ]
 
 # *** COMBINED DATASET ***
-ALL_CORPUS = GREETING_CORPUS + TYPE_CORPUS + PRICE_RANGE_CORPUS + TIME_CORPUS
+ALL_CORPUS = GREETING_CORPUS + TYPE_CORPUS + PRICE_CORPUS + TIME_CORPUS
 
 # *** BOT ANSWER DATASET ***
 GREETING_CHOICE = ["Hey ", "Hello ", "Hi " "What's up ", "Greeting "]
@@ -125,4 +144,41 @@ LABEL_COLORS = [
     "purple",
     "pink",
     "brown",
+]
+
+UNNECESSARY_WORDS = [
+    ",",
+    ".",
+    "restaurants",
+    "restaurant",
+    "stores",
+    "store",
+    "shops"
+    "shop",
+    "please",
+    "give",
+    "me",
+    "my",
+    "mine",
+    "i",
+    "want",
+    "some",
+    "can",
+    "you",
+    "just",
+    "for",
+    "but",
+    "type",
+    "best",
+    "good",
+    "with",
+    "in",
+    "price",
+    "prices",
+    "that",
+    "thad",
+    "dat",
+    "you",
+    "u",
+    "have",
 ]

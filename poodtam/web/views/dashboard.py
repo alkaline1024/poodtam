@@ -27,8 +27,8 @@ def index():
     chat = models.Chat.objects(user=user).first()
     if not chat:
         chat = models.Chat()
-        chat.create_bot_message("text", "Ask me...")
         chat.user = user
+        chat.create_bot_message("text", "Ask me...")
     chat.save()
     return render_template(
         "/dashboard/index.html",
@@ -44,11 +44,6 @@ def submit_message():
     input = request.args.get("input", None)
     if input:
         chat.create_user_message("text", input)
-
-        result = chat_answer(chat, input)
-        chat.create_bot_message("text", result)
-        if chat.current_state == "completed" and chat.get_current_df() is not None:
-            chat.create_bot_message("dataframe", str(chat.get_current_df().to_json()))
-    
+        chat_answer(chat, input)
     chat.save()
     return redirect(url_for('dashboard.index'))

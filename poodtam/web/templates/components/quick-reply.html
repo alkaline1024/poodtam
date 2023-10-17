@@ -1,0 +1,88 @@
+{% macro Recommandation() %}
+  <!-- Quick Reply #List By Preferred -->
+  <a class="ui primary icon circular label basic" 
+    style="cursor: pointer !important"
+    onmouseover="this.style = 'background-color: #2185D0; color: white'; " 
+    onmouseleave="this.style = 'background-color: none; color: #2185D0'; "
+    href="{{ url_for('dashboard.submit_message', input='Recommand restaurant for me') }}">
+    <p><b>Recommand restaurant for me</b> &ensp; <i class="recommand send icon" ></i></p>
+    <!-- List preferred restaurants currently open -->
+  </a>
+  &ensp;
+  <!-- Quick Reply #List By Type -->
+{% endmacro %}
+
+{% macro Price() %}
+  <a class="ui primary icon circular label basic" 
+    style="cursor: pointer !important"
+    onmouseover="this.style = 'background-color: #2185D0; color: white'; " 
+    onmouseleave="this.style = 'background-color: none; color: #2185D0'; "
+    href="{{ url_for('dashboard.submit_message', input='Low') }}">
+    <p><b>1. Low</b> &ensp; <i class="low send icon" ></i></p>
+      <!-- Less than 100 baht -->
+  </a>
+  &ensp;
+    <a class="ui primary icon circular label basic" 
+      style="cursor: pointer !important"
+    onmouseover="this.style = 'background-color: #2185D0; color: white'; " 
+    onmouseleave="this.style = 'background-color: none; color: #2185D0'; "
+    href="{{ url_for('dashboard.submit_message', input='Medium') }}">
+    <p><b>2. Medium</b> &ensp; <i class="med send icon" ></i></p>
+    <!-- 100 baht - 250 baht -->
+  </a>
+  &ensp;
+  <a class="ui primary icon circular label basic" 
+    style="cursor: pointer !important"
+    onmouseover="this.style = 'background-color: #2185D0; color: white'; " 
+    onmouseleave="this.style = 'background-color: none; color: #2185D0'; "
+    href="{{ url_for('dashboard.submit_message', input='High') }}">
+    <p><b>3. High</b> &ensp; <i class="high send icon" ></i></p>
+      <!-- Less than 100 baht -->
+  </a>
+  &ensp;
+  <a class="ui primary icon circular label basic" 
+    style="cursor: pointer !important"
+    onmouseover="this.style = 'background-color: #2185D0; color: white'; " 
+    onmouseleave="this.style = 'background-color: none; color: #2185D0'; "
+    href="{{ url_for('dashboard.submit_message', input='Not Specific') }}">
+    <p><b>4. Not specific</b> &ensp; <i class="anyprice send icon" ></i></p>
+      <!-- Show all price of restaurants -->
+  </a>
+  &ensp;
+{% endmacro %}
+
+
+{% macro Time() %}
+  <a class="ui primary icon circular label basic" 
+    style="cursor: pointer !important"
+    onmouseover="this.style = 'background-color: #2185D0; color: white'; " 
+    onmouseleave="this.style = 'background-color: none; color: #2185D0'; "
+    href="{{ url_for('dashboard.submit_message', input='Anytime') }}">
+    <p><b>1. Anytime</b> &ensp; <i class="anytime send icon" ></i></p>
+      <!-- All openning time -->
+  </a>
+  &ensp;
+  <a class="ui primary icon circular label basic" 
+    style="cursor: pointer !important"
+    onmouseover="this.style = 'background-color: #2185D0; color: white'; " 
+    onmouseleave="this.style = 'background-color: none; color: #2185D0'; "
+    href="{{ url_for('dashboard.submit_message', input='Choose Time') }}">
+    <p><b>2. Choose time</b> &ensp; <i class="choose send icon" ></i></p>
+    <!-- Choose opening time by myself -->
+  </a>
+  &ensp;
+{% endmacro %}
+
+
+
+{% macro Reset() %}
+  <!-- Quick Reply #Reset -->
+  <a class="ui red icon circular label basic" 
+  onmouseover="this.style = 'background-color: #9F3A38; color: white'; " 
+  onmouseleave="this.style = 'background-color: none; color: #9F3A38'; " 
+  href="{{ url_for('dashboard.submit_message', input='Reset') }}">
+  <p><b>Reset</b> &ensp; <i class="sync icon" ></i></p>
+  <!-- Start talk from beginning -->
+  </a>
+  &ensp;
+{% endmacro %}

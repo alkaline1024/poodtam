@@ -31,18 +31,31 @@ class Chat(me.Document):
     messages = me.EmbeddedDocumentListField(Message)
 
     current_df = me.StringField()
-    current_state = me.StringField(choices=["none", "type", "price", "time", "choose_period", "completed", "error"], required=True, default="none")
+    current_state = me.StringField()
+    
+    # current data for predict user
+    current_type = me.StringField()
+    current_price = me.StringField()
+    current_time = me.StringField()
+    selected_time = me.DateTimeField()
 
     created_date = me.DateTimeField(required=True, default=datetime.datetime.now)
     updated_date = me.DateTimeField(required=True, default=datetime.datetime.now)
 
-    def create_bot_message(self, type:str, text:str):
-        message = Message(type=type, text=text, sender="bot")
-        self.messages.append(message)
-
     def create_user_message(self, type:str, text:str):
         message = Message(type=type, text=text, sender="user")
         self.messages.append(message)
+        self.save()
+
+    def create_bot_message(self, type:str, text:str):
+        message = Message(type=type, text=text, sender="bot")
+        self.messages.append(message)
+        self.save()
+
+    def create_bot_message_dataframe(self, df):
+        message = Message(type="dataframe", text=df.to_json(), sender="bot")
+        self.messages.append(message)
+        self.save()
 
     def save_current_df(self, df):
         if df is not None:
@@ -57,3 +70,13 @@ class Chat(me.Document):
             print(error)
             
         return pd.DataFrame([])
+    
+    # type, price, time
+    def clear_current_data(self):
+        self.current_type = ""
+        self.current_time = ""
+        self.selected_time = None
+        self.current_price = ""
+        self.current_state = "none"
+        self.save()
+        

@@ -1,5 +1,6 @@
 {% extends "/base/default-page.html" %}
 {% import "/components/message.html" as message_renderer %}
+{% import "/components/quick-reply.html" as quick_reply %}
 
 {% block content %}
   <div class="ui raised padded secondary fitted segment">
@@ -16,48 +17,70 @@
       </div>
     </div>
     <div class="ui fluid segment">
-      <!-- Quick Reply #List By Preferred -->
-      <a class="ui floating info small compact message" 
-        onmouseover="this.style = 'background-color: #276F86; color: white'; $('.recommand.send.icon')[0].style.display = 'inline'" 
-        onmouseleave="this.style = 'background-color: none; color: #276F86'; $('.recommand.send.icon')[0].style.display = 'none'"
-        href="{{ url_for('dashboard.submit_message', input='Recommand restaurant for me') }}" >
-        <p><b>Recommand restaurant for me</b> &ensp; <i class="recommand send icon" style="display: none"></i></p>
-        List preferred restaurants currently open
-      </a>
-      &ensp;
-      <!-- Quick Reply #List By Type -->
-      <div class="ui pointing scrolling dropdown">
-        <a class="ui floating info small compact message" 
-          onmouseover="this.style = 'background-color: #276F86; color: white'; $('.list-type.list.icon')[0].style.display = 'inline'" 
-          onmouseleave="this.style = 'background-color: none; color: #276F86'; $('.list-type.list.icon')[0].style.display = 'none'">
-          <p><b>Give me (type) restaurant</b> &ensp; <i class="list-type list icon" style="display: none"></i></p>
-          List restaurants by selected type 
-        </a>
-        <div class="menu">
-          <div class="header">
-            List Restaurant by Type
+      {% if chat.current_state == 'price' %}
+        {{ quick_reply.Price() }}
+      {% elif chat.current_state == 'time' %}
+        {{ quick_reply.Time() }}
+      {% else %}
+        {{ quick_reply.Recommandation() }}
+        <div class="ui dropdown pointing scrolling" id="list-type">
+          <a class="ui primary icon circular label basic" 
+            style="cursor: pointer !important"
+            onmouseover="this.style = 'background-color: #2185D0; color: white'; " 
+            onmouseleave="this.style = 'background-color: none; color: #2185D0'; ">
+            <p><b>Select Type</b> &ensp; <i class="list-type list icon"></i></p>
+            <!-- List restaurants by selected type  -->
+          </a>
+          <div class="menu">
+            <div class="header">
+              List Restaurant by Type
+            </div>
+            <div class="ui icon search input">
+              <i class="search icon"></i>
+              <input type="text" placeholder="Search restaurant type...">
+            </div>
+            {% for type in RESTAURANT_TYPE %}
+              <a class="item" onclick="input = $('#input')[0]; input.value += '{{ type }}, '; input.focus()">{{ type }}</a>
+            {% endfor %}
           </div>
-          <div class="ui icon search input">
-            <i class="search icon"></i>
-            <input type="text" placeholder="Search restaurant type...">
-          </div>
-          {% for type in RESTAURANT_TYPE %}
-            <a class="item" href="/submit_message?input=Give me {{ type }} restaurant">{{ type }}</a>
-          {% endfor %}
         </div>
-      </div>
-      &ensp;
-      {% if chat.current_state not in ["type", "completed"] %}
-        <!-- Quick Reply #Reset -->
-        <a class="ui floating info small compact message" 
-        onmouseover="this.style = 'background-color: #276F86; color: white'; $('.reset.send.icon')[0].style.display = 'inline'" 
-        onmouseleave="this.style = 'background-color: none; color: #276F86'; $('.reset.send.icon')[0].style.display = 'none'" 
-          href="{{ url_for('dashboard.submit_message', input='Reset') }}" >
-          <p><b>Reset</b> &ensp; <i class="reset send icon" style="display: none"></i></p>
-          Start talk from beginning
-        </a>
+        &ensp;
+
+        <div class="ui dropdown bottom pointing" id="list-price">
+          <a class="ui primary icon circular label basic" 
+            style="cursor: pointer !important"
+            onmouseover="this.style = 'background-color: #2185D0; color: white'; " 
+            onmouseleave="this.style = 'background-color: none; color: #2185D0'; ">
+            <p><b>Select Price</b> &ensp; <i class="list-price list icon"></i></p>
+            <!-- List prices range for restaurants  -->
+          </a>
+          <div class="menu">
+              <a class="item" onclick="input = $('#input')[0]; input.value += 'Low Price, '; input.focus()">Low Price</a>
+              <a class="item" onclick="input = $('#input')[0]; input.value += 'Medium Price, '; input.focus()">Medium Price</a>
+              <a class="item" onclick="input = $('#input')[0]; input.value += 'High Price, '; input.focus()">High Price</a>
+              <a class="item" onclick="input = $('#input')[0]; input.value += 'Anyprice, '; input.focus()">Anyprice</a>
+          </div>
+        </div>
+        &ensp;
+
+        <div class="ui dropdown bottom pointing" id="list-time">
+          <a class="ui primary icon circular label basic" 
+            style="cursor: pointer !important"
+            onmouseover="this.style = 'background-color: #2185D0; color: white'; " 
+            onmouseleave="this.style = 'background-color: none; color: #2185D0'; ">
+            <p><b>Select Time</b> &ensp; <i class="list-time list icon"></i></p>
+            <!-- List time that you want to go -->
+          </a>
+          <div class="menu">
+              <a class="item" onclick="input = $('#input')[0]; input.value += 'Anytime, '; input.focus()">Anytime</a>
+              <a class="item" onclick="input = $('#input')[0]; input.value += 'Now, '; input.focus()">Now</a>
+              <a class="item" onclick="input = $('#input')[0]; input.value += 'Choose time, '; input.focus()">Choose time</a>
+          </div>
+        </div>
         &ensp;
       {% endif %}
+      {{ quick_reply.Reset() }}
+      <!-- INPUT START -->
       <div class="ui info message center aligned">
         <form method="GET" action="{{ url_for('dashboard.submit_message') }}">
           <div class="ui fluid transparent input">
@@ -69,6 +92,7 @@
           </div>
         </form>
       </div>
+      <!-- END INPUT -->
     </div>
   </div>
   {% include "/components/back-to-top.html" %}
@@ -76,25 +100,19 @@
 
 {% block additional_js %}
   <script>
-    // <!-- MOCK LOADING USER MESSAGE -->
-    window.top.location.href = "#input";
-    user_input = document.getElementById("{{ chat.messages[-2].uid }}").style.display = "none";
-    setTimeout(function() {
-      user_input = document.getElementById("{{ chat.messages[-2].uid }}");
-      user_input.style.display = "none";
-      $(user_input).transition('fade up');
-      window.scrollTo(0, ScreenHeight);
-    },100);
-    // <!-- MOCK LOADING BOT RESPONSE MESSAGE -->
-    bot_response = document.getElementById("{{ chat.messages[-1].uid }}").style.display = "none";
-    setTimeout(function() {
-      bot_response = document.getElementById("{{ chat.messages[-1].uid }}");
-      bot_response.style.display = "none";
-      $(bot_response).transition('fade up');
-      window.scrollTo(0, ScreenHeight);
-    },1000);
-  </script>
-  <script>
+    window.top.location.href = "#input"
     $('.ui.dropdown').dropdown()
   </script>
+  {% if chat.messages | length > 2 %}
+    <script>
+      // <!-- MOCK LOADING BOT RESPONSE MESSAGE -->
+      bot_response = document.getElementById("{{ chat.messages[-1].uid }}").style.display = "none";
+      setTimeout(function() {
+        bot_response = document.getElementById("{{ chat.messages[-1].uid }}");
+        bot_response.style.display = "none";
+        $(bot_response).transition('fade up');
+        window.scrollTo(0, ScreenHeight);
+      },200);
+    </script>
+  {% endif %}
 {% endblock %}

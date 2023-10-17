@@ -54,14 +54,14 @@
                   <div class="ui message">
                     <p>
                       <h3 class="ui header" style="margin-bottom: 0.5em;">{{ data['name'] }}</h3>
-                      {% for type in data['type'].split(", ") %}
+                      {% for type in data['type'].split(",") %}
                         {% if type in current_user.preferred_types %}
                           <div class="ui teal label link pop" style="cursor: default;" data-content="You liked this type" data-variation="inverted tiny" data-position="bottom center">
                             {{ type }}
                           </div>
                         {% endif %}
                       {% endfor %}
-                      {% for type in data['type'].split(", ") %}
+                      {% for type in data['type'].split(",") %}
                         {% if type not in current_user.preferred_types %}
                           <div class="ui grey label" style="cursor: default;">
                             {{ type }}

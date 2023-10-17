@@ -4,28 +4,8 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from sentence_transformers import SentenceTransformer, util
 
-UNNECESSARY_WORDS = [
-    "restaurants",
-    "restaurant",
-    "stores",
-    "store",
-    "shops"
-    "shop",
-    "please",
-    "give",
-    "me",
-    "i",
-    "want",
-    "some",
-    "can",
-    "you",
-    "just",
-    "for",
-    "but",
-    "type",
-    "best",
-    "good",
-]
+
+from .dataset import UNNECESSARY_WORDS
 
 model = SentenceTransformer(
     "sentence-transformers/distiluse-base-multilingual-cased-v2"
@@ -35,7 +15,6 @@ def calculate_similarity_score(question, corpus):
     for word in UNNECESSARY_WORDS:
         if word in lst_question:
             lst_question.remove(word)
-
     cleaned_question = " ".join(lst_question)
 
     question_vec = model.encode(

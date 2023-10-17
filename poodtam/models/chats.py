@@ -28,6 +28,8 @@ class Message(me.EmbeddedDocument):
 class Chat(me.Document):
     meta = {"collection": "chats"}
 
+    name = me.StringField()
+    
     user = me.ReferenceField("User", required=True)
     messages = me.EmbeddedDocumentListField(Message)
 

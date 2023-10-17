@@ -1,0 +1,42 @@
+<div class="ui left fixed vertical inverted menu" style="box-sizing: border-box; width: 18.75%">
+  {% if current_user.is_authenticated %}
+    <div class="item">
+      <div class="ui inverted icon header center aligned" style="padding-top: 1em;">
+        {% if current_user.get_picture() %}
+          <img class="ui massive avatar image" src="{{ current_user.get_picture() }}" style="margin-bottom: 0.7em;"><br>
+        {% else %}
+          <i class="inverted large teal circular colored user icon"></i>
+        {% endif %}
+        {{ current_user.name }}
+      </div>
+    </div>
+  <a class="{{ 'active' if 'profile' in request.url }} item" href="{{ url_for('accounts.edit') }}">
+    <i class="edit icon"></i>Profile
+    </a>
+  <div class="item">
+    <div class="header">Chat</div>
+    <div class="menu">
+      <a class="item" href="{{ url_for('accounts.new_chat') }}">
+          <i class="plus square outline icon"></i>New Chat
+      </a>
+      {% for chat_i in chats %}
+      <a class="{{ 'active' if chat_i.id == chat.id }} item" href="{{ url_for('dashboard.index', chat_id=chat_i.id) }}">
+          <i class="square {{ 'full' if chat_i.id == chat.id else 'outline' }} icon"></i>
+          {{ chat_i.name }}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  <a class="item" href="{{ url_for('accounts.logout') }}">
+    <i class="inverted red sign out icon"></i><span class="ui inverted red text">Logout</span>
+  </a>
+  {% else %}
+  <div class="item"><div class="header">Poodtam Dasboard</div></div>
+  <a class="{{ 'active' if 'login' in request.url }} item" href="{{ url_for('accounts.login') }}">Login</a>
+  <a class="{{ 'active' if 'register' in request.url }} item" href="{{ url_for('accounts.register') }}">Sign up</a>
+  {% endif %}
+</div>
+
+<script>
+  $('ui.dropdown').dropdown();
+</script>

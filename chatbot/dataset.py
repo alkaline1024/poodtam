@@ -81,7 +81,6 @@ PRICE_CORPUS = (
 
 # *** TIME DATASET ***
 ANYTIME_CORPUS = [
-    "any time",
     "anytime",
     "alltime",
     "allday",
@@ -112,7 +111,6 @@ BREAKFAST_CORPUS = [
 LUNCH_CORPUS = [
     "lunch",
     "noon",
-    "midday",
 ]
 DINNER_CORPUS = [
     "afternoon",

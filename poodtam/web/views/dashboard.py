@@ -24,26 +24,34 @@ def is_openning(opened_time, closed_time):
 @login_required
 def index():
     user = current_user._get_current_object()
+    chats = models.Chat.objects(user=user).order_by("-created_date")
+
+    chat_id = request.args.get("chat_id", None)
     chat = models.Chat.objects(user=user).first()
+    if chat_id:
+        chat = models.Chat.objects.get(id=chat_id)
+        
     if not chat:
         chat = models.Chat()
         chat.user = user
+        chat.name = f"Chat {models.Chat.objects().count() + 1}"
         chat.create_bot_message("text", "Ask me...")
-    chat.save()
+        chat.save()
     return render_template(
         "/dashboard/index.html",
         RESTAURANT_TYPE=TYPE_CORPUS,
         chat=chat,
+        chats=chats,
         is_openning=is_openning,
     )
 
-@module.route("/submit_message", methods=["GET"])
-def submit_message():
+@module.route("/submit_message/<chat_id>", methods=["GET"])
+def submit_message(chat_id):
     user = current_user._get_current_object()
-    chat = models.Chat.objects(user=user).first()
+    chat = models.Chat.objects.get(id=chat_id)
     input = request.args.get("input", None)
     if input:
         chat.create_user_message("text", input)
         chat_answer(chat, input)
     chat.save()
-    return redirect(url_for('dashboard.index'))
+    return redirect(url_for('dashboard.index', chat_id=chat.id))

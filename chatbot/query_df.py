@@ -31,3 +31,8 @@ def query_in_period_time(df, chat):
         selected_time = chat.selected_time
         df = df[(df["opening time"] <= selected_time) & (selected_time <= df["closing time"])]
     return df
+
+def query_in_period_now(df):
+    current_time = datetime.datetime.now().time()
+    df = df[(df["opening time"] <= current_time) & (current_time <= df["closing time"])]
+    return df

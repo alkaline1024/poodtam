@@ -1,10 +1,10 @@
-{% macro Recommandation() %}
+{% macro Recommandation(chat) %}
   <!-- Quick Reply #List By Preferred -->
   <a class="ui primary icon circular label basic" 
     style="cursor: pointer !important"
     onmouseover="this.style = 'background-color: #2185D0; color: white'; " 
     onmouseleave="this.style = 'background-color: none; color: #2185D0'; "
-    href="{{ url_for('dashboard.submit_message', input='Recommand restaurant for me') }}">
+    href="{{ url_for('dashboard.submit_message', chat_id=chat.id, input='Recommand restaurant for me') }}">
     <p><b>Recommand restaurant for me</b> &ensp; <i class="recommand send icon" ></i></p>
     <!-- List preferred restaurants currently open -->
   </a>
@@ -12,12 +12,12 @@
   <!-- Quick Reply #List By Type -->
 {% endmacro %}
 
-{% macro Price() %}
+{% macro Price(chat) %}
   <a class="ui primary icon circular label basic" 
     style="cursor: pointer !important"
     onmouseover="this.style = 'background-color: #2185D0; color: white'; " 
     onmouseleave="this.style = 'background-color: none; color: #2185D0'; "
-    href="{{ url_for('dashboard.submit_message', input='Low') }}">
+    href="{{ url_for('dashboard.submit_message', chat_id=chat.id, input='Low') }}">
     <p><b>1. Low</b> &ensp; <i class="low send icon" ></i></p>
       <!-- Less than 100 baht -->
   </a>
@@ -26,7 +26,7 @@
       style="cursor: pointer !important"
     onmouseover="this.style = 'background-color: #2185D0; color: white'; " 
     onmouseleave="this.style = 'background-color: none; color: #2185D0'; "
-    href="{{ url_for('dashboard.submit_message', input='Medium') }}">
+    href="{{ url_for('dashboard.submit_message', chat_id=chat.id, input='Medium') }}">
     <p><b>2. Medium</b> &ensp; <i class="med send icon" ></i></p>
     <!-- 100 baht - 250 baht -->
   </a>
@@ -35,7 +35,7 @@
     style="cursor: pointer !important"
     onmouseover="this.style = 'background-color: #2185D0; color: white'; " 
     onmouseleave="this.style = 'background-color: none; color: #2185D0'; "
-    href="{{ url_for('dashboard.submit_message', input='High') }}">
+    href="{{ url_for('dashboard.submit_message', chat_id=chat.id, input='High') }}">
     <p><b>3. High</b> &ensp; <i class="high send icon" ></i></p>
       <!-- Less than 100 baht -->
   </a>
@@ -44,7 +44,7 @@
     style="cursor: pointer !important"
     onmouseover="this.style = 'background-color: #2185D0; color: white'; " 
     onmouseleave="this.style = 'background-color: none; color: #2185D0'; "
-    href="{{ url_for('dashboard.submit_message', input='Not Specific') }}">
+    href="{{ url_for('dashboard.submit_message', chat_id=chat.id, input='Not Specific') }}">
     <p><b>4. Not specific</b> &ensp; <i class="anyprice send icon" ></i></p>
       <!-- Show all price of restaurants -->
   </a>
@@ -52,13 +52,13 @@
 {% endmacro %}
 
 
-{% macro Time() %}
+{% macro Time(chat) %}
   <a class="ui primary icon circular label basic" 
     style="cursor: pointer !important"
     onmouseover="this.style = 'background-color: #2185D0; color: white'; " 
     onmouseleave="this.style = 'background-color: none; color: #2185D0'; "
-    href="{{ url_for('dashboard.submit_message', input='Anytime') }}">
-    <p><b>1. Anytime</b> &ensp; <i class="anytime send icon" ></i></p>
+    href="{{ url_for('dashboard.submit_message', chat_id=chat.id, input='Now') }}">
+    <p><b>1. Now</b> &ensp; <i class="Now send icon" ></i></p>
       <!-- All openning time -->
   </a>
   &ensp;
@@ -66,21 +66,57 @@
     style="cursor: pointer !important"
     onmouseover="this.style = 'background-color: #2185D0; color: white'; " 
     onmouseleave="this.style = 'background-color: none; color: #2185D0'; "
-    href="{{ url_for('dashboard.submit_message', input='Choose Time') }}">
-    <p><b>2. Choose time</b> &ensp; <i class="choose send icon" ></i></p>
+    href="{{ url_for('dashboard.submit_message', chat_id=chat.id, input='Breakfast') }}">
+    <p><b>2. Breakfast</b> &ensp; <i class="Breakfast send icon" ></i></p>
+      <!-- All openning time -->
+  </a>
+  &ensp;
+  <a class="ui primary icon circular label basic" 
+    style="cursor: pointer !important"
+    onmouseover="this.style = 'background-color: #2185D0; color: white'; " 
+    onmouseleave="this.style = 'background-color: none; color: #2185D0'; "
+    href="{{ url_for('dashboard.submit_message', chat_id=chat.id, input='Lunch') }}">
+    <p><b>3. Lunch</b> &ensp; <i class="Lunch send icon" ></i></p>
+      <!-- All openning time -->
+  </a>
+  &ensp;
+  <a class="ui primary icon circular label basic" 
+    style="cursor: pointer !important"
+    onmouseover="this.style = 'background-color: #2185D0; color: white'; " 
+    onmouseleave="this.style = 'background-color: none; color: #2185D0'; "
+    href="{{ url_for('dashboard.submit_message', chat_id=chat.id, input='Dinner') }}">
+    <p><b>4. Dinner</b> &ensp; <i class="Dinner send icon" ></i></p>
+      <!-- All openning time -->
+  </a>
+  &ensp;
+  <a class="ui primary icon circular label basic" 
+    style="cursor: pointer !important"
+    onmouseover="this.style = 'background-color: #2185D0; color: white'; " 
+    onmouseleave="this.style = 'background-color: none; color: #2185D0'; "
+    href="{{ url_for('dashboard.submit_message', chat_id=chat.id, input='Specific time') }}">
+    <p><b>5. Specific time</b> &ensp; <i class="specific send icon" ></i></p>
     <!-- Choose opening time by myself -->
+  </a>
+  &ensp;
+  <a class="ui primary icon circular label basic" 
+    style="cursor: pointer !important"
+    onmouseover="this.style = 'background-color: #2185D0; color: white'; " 
+    onmouseleave="this.style = 'background-color: none; color: #2185D0'; "
+    href="{{ url_for('dashboard.submit_message', chat_id=chat.id, input='Anytime') }}">
+    <p><b>6. Anytime</b> &ensp; <i class="anytime send icon" ></i></p>
+      <!-- All openning time -->
   </a>
   &ensp;
 {% endmacro %}
 
 
 
-{% macro Reset() %}
+{% macro Reset(chat) %}
   <!-- Quick Reply #Reset -->
   <a class="ui red icon circular label basic" 
   onmouseover="this.style = 'background-color: #9F3A38; color: white'; " 
   onmouseleave="this.style = 'background-color: none; color: #9F3A38'; " 
-  href="{{ url_for('dashboard.submit_message', input='Reset') }}">
+  href="{{ url_for('dashboard.submit_message', chat_id=chat.id, input='Reset') }}">
   <p><b>Reset</b> &ensp; <i class="sync icon" ></i></p>
   <!-- Start talk from beginning -->
   </a>

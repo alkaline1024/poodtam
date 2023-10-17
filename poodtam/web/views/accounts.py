@@ -64,9 +64,11 @@ def register():
 @login_required
 def edit():
     user = current_user._get_current_object()
+    chats = models.Chat.objects(user=user).order_by("-created_date")
+    chat = chats.first()
     form = forms.accounts.ProfileForm(obj=user)
     if not form.validate_on_submit():
-        return render_template("accounts/edit.html", form=form)
+        return render_template("accounts/edit.html", chats=chats, chat=chat, form=form)
 
     user = current_user._get_current_object()
     form.populate_obj(user)
@@ -88,7 +90,7 @@ def edit():
 
     user.save()
     flash("Saved Successfully!")
-    return render_template("accounts/edit.html", form=form)
+    return render_template("accounts/edit.html", chats=chats, chat=chat, form=form)
 
 @module.route("/accounts/<user_id>/picture/<filename>", methods=["GET", "POST"])
 def picture(user_id, filename):
@@ -103,3 +105,26 @@ def picture(user_id, filename):
         mimetype=user.picture.content_type,
     )
     return response
+
+
+
+@module.route("/new_chat")
+@login_required
+def new_chat():
+    chat = models.Chat()
+    chat.user = current_user._get_current_object()
+    chat.name = f"Chat {models.Chat.objects().count() + 1}"
+    chat.create_bot_message("text", "Ask me...")
+    chat.save()
+
+    return redirect(url_for("dashboard.index", chat_id=chat.id))
+
+
+@module.route("/chats/<chat_id>/delete")
+@login_required
+def delete_chat(chat_id):
+    chat = models.Chat.objects.get(id=chat_id)
+    chat.delete()
+
+    return redirect(url_for("dashboard.index"))
+

@@ -48,8 +48,10 @@ def answer_recommandation(chat):
     df = dataset.df.copy()
     preferred_types = chat.user.preferred_types
     preferred_prices = chat.user.preferred_prices
+    user_preferred_type_html = ' '.join([f'<div class="ui teal label">{type}</div>' for type in chat.user.preferred_types])
+    user_preferred_price_html = ' '.join([f'<div class="ui teal label">{price}</div>' for price in chat.user.preferred_prices])
+    
     chat.current_state = "none"
-
     
     if not preferred_types:
         answer = random.choice(GREETING_CHOICE) + random.choice(HAPPY_EMOJI_CHOICE) + "You didn't select preferred type of restaurants"
@@ -73,17 +75,26 @@ def answer_recommandation(chat):
     if selected_df.empty:
         answer = f"Sorry we cannot find restaurant suite with your prefer {random.choice(SAD_EMOJI_CHOICE)}"
         chat.create_bot_message("text", answer)
+        answer = f"{random.choice(SAD_EMOJI_CHOICE)} Your current preferred type is {user_preferred_type_html}"
+        chat.create_bot_message("text", answer)
+        answer = f"{random.choice(SAD_EMOJI_CHOICE)} Your current preferred price is {user_preferred_price_html}"
+        chat.create_bot_message("text", answer)
         return False
     
-    selected_df = query_df.query_in_period_time(selected_df, datetime.datetime.now().time())
-    if selected_df.empty:
+    final_df = query_df.query_in_period_now(selected_df)
+    if final_df.empty:
         answer = f"Not any restaurant are open right now. {random.choice(SAD_EMOJI_CHOICE)}"
         chat.create_bot_message("text", answer)
         return False
         
-    answer = f"Here is a list of restaurants we think are right for you. {random.choice(HAPPY_EMOJI_CHOICE)}"
+    answer = f"Here is a list of restaurants you must liked it. {random.choice(HAPPY_EMOJI_CHOICE)}"
     chat.create_bot_message("text", answer)
-    chat.create_bot_message_dataframe(selected_df)
+    chat.create_bot_message_dataframe(final_df)
+
+    answer = f"{random.choice(GREETING_CHOICE)} {random.choice(HAPPY_EMOJI_CHOICE)} I just give you recommandation about restaurant {random.choice(HAPPY_EMOJI_CHOICE)} <p></p> This data is based on your prefers. <p><div class='ui brown horizontal label'>Types</div> {user_preferred_type_html}</p><p><div class='ui green horizontal label'>Prices</div> {user_preferred_price_html}</p>"
+    chat.create_bot_message("text", answer)
+    answer = f"We hope you liked it. {random.choice(HAPPY_EMOJI_CHOICE)}"
+    chat.create_bot_message("text", answer)
     return True
 
 
@@ -256,7 +267,7 @@ def answer_time(chat, input):
     print(f'current_state({chat.current_state}) | input: "{input}" | predict: "{predict}" | score: {score}')
 
     if predict in ANYTIME_CORPUS:
-        answer = f"Here is a list of restaurants we think are right for you. {random.choice(HAPPY_EMOJI_CHOICE)}"
+        answer = f"Here is a list of restaurants you must liked it. {random.choice(HAPPY_EMOJI_CHOICE)}"
         chat.create_bot_message("text", answer)
         chat.current_state = "completed"
         chat.current_time = predict
@@ -318,8 +329,8 @@ def chat_final_answer_dataframe(chat):
         if df.empty:
             queried_type_df = query_df.query_type(unqueried_df, chat.current_type)
             answer = f"Sorry <b>{random.choice(SAD_EMOJI_CHOICE)}</b> for the information right now. We couldn't find any <div class='ui brown label'>{chat.current_type}</div> for the <div class='ui green label'>{chat.current_price.title()}</div> price. <p></p>Here are <div class='ui brown label'>{chat.current_type}</div> that we recommend. We hope you like them. {random.choice(HAPPY_EMOJI_CHOICE)}"
-            chat.create_bot_message_dataframe(queried_type_df)
             chat.create_current_information()
+            chat.create_bot_message_dataframe(queried_type_df)
             chat.create_bot_message("text", answer)
             return True
     
@@ -329,13 +340,13 @@ def chat_final_answer_dataframe(chat):
             chat.selected_time = chat.selected_time.strftime("%H:%M")
             queried_price_df = query_df.query_price(df, chat.current_price)
             answer = f"Sorry <b>{random.choice(HAPPY_EMOJI_CHOICE)}</b> We couldn't find any restaurants open during the time you selected. <div class='ui purple label'>{chat.selected_time}</div> <p/>Here are our recommended restaurants. Hope you like it. {random.choice(HAPPY_EMOJI_CHOICE)}"
-            chat.create_bot_message_dataframe(queried_price_df)
             chat.create_current_information()
+            chat.create_bot_message_dataframe(queried_price_df)
             chat.create_bot_message("text", answer)
             return True
     
-    answer = f"Here is a list of restaurants we think are right for you. {random.choice(HAPPY_EMOJI_CHOICE)}"
-    chat.create_bot_message_dataframe(df)
+    answer = f"Here is a list of restaurants you must liked it. {random.choice(HAPPY_EMOJI_CHOICE)}"
     chat.create_current_information()
+    chat.create_bot_message_dataframe(df)
     chat.create_bot_message("text", answer)
     return True

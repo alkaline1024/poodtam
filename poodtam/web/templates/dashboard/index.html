@@ -3,6 +3,12 @@
 {% import "/components/quick-reply.html" as quick_reply %}
 
 {% block content %}
+  <div class="ui raised padded secondary segment">
+    <span class="ui black text" style="font-weight: 700;">{{ chat.name }}</span>
+    <a style="margin-left: 1em; cursor: pointer" href="{{ url_for('accounts.delete_chat', chat_id=chat.id) }}">
+      <i class="small red trash icon"></i>
+    </a>
+  </div>
   <div class="ui raised padded secondary fitted segment">
     <div class="ui hidden divider"></div>
     <div class="ui basic segment">
@@ -19,25 +25,25 @@
     <div class="ui top attached right aligned segment">
       Current Information:&ensp;
       <div class="ui brown label">
-        {{ chat.current_type.title() }}
+        {{ chat.current_type.title() if chat.current_type else 'Not Selected' }}
         <div class="detail">Type</div>
       </div>
       <div class="ui green label">
-        {{ chat.current_price.title() }}
+        {{ chat.current_price.title() if chat.current_price else 'Not Selected' }}
         <div class="detail">Price</div>
       </div>
       <div class="ui purple label">
-        {{ chat.current_time.title() }}
+        {{ chat.current_time.title() if chat.current_time else 'Not Selected' }}
         <div class="detail">Time</div>
       </div>
     </div>
     <div class="ui fluid attached segment">
       {% if chat.current_state == 'price' %}
-        {{ quick_reply.Price() }}
+        {{ quick_reply.Price(chat) }}
       {% elif chat.current_state == 'time' %}
-        {{ quick_reply.Time() }}
+        {{ quick_reply.Time(chat) }}
       {% else %}
-        {{ quick_reply.Recommandation() }}
+        {{ quick_reply.Recommandation(chat) }}
         <div class="ui dropdown pointing scrolling" id="list-type">
           <a class="ui primary icon circular label basic" 
             style="cursor: pointer !important"
@@ -97,10 +103,10 @@
         </div>
         &ensp;
       {% endif %}
-      {{ quick_reply.Reset() }}
+      {{ quick_reply.Reset(chat) }}
       <!-- INPUT START -->
       <div class="ui info message center aligned">
-        <form method="GET" action="{{ url_for('dashboard.submit_message') }}">
+        <form method="GET" action="{{ url_for('dashboard.submit_message', chat_id=chat.id) }}">
           <div class="ui fluid transparent input">
             <input type="text" name="input" id="input" placeholder="Send a message">
             <button class="ui primary icon button">

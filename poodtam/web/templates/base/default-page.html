@@ -8,16 +8,17 @@
   <div class="container">
     <main>
       {% include "/components/navbar.html" %}
-
       <div class="ui grid">
-        <div class="three wide column"></div>
-        <div class="ten wide column">
-          <div class="ui hidden divider"></div>
-          {% block content %}{% endblock content %}
+        <div class="three wide column">
+          {% include "/components/menu-bar.html" %}
         </div>
-        <div class="three wide column"></div>
+        <div class="thirteen wide column">
+          <div class="ui hidden divider"></div>
+          <div class="ui very padded basic segment">
+            {% block content %}{% endblock content %}
+          </div>
+        </div>
       </div>
-
       <div id="bottom" name="bottom"></div>
     </main>
 

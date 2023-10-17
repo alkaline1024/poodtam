@@ -40,7 +40,7 @@
               <input type="text" placeholder="Search restaurant type...">
             </div>
             {% for type in RESTAURANT_TYPE %}
-              <a class="item" onclick="input = $('#input')[0]; input.value += '{{ type }}, '; input.focus()">{{ type }}</a>
+              <a class="item" onclick="input = $('#input')[0]; input.value += '{{ type }} '; input.focus()">{{ type }}</a>
             {% endfor %}
           </div>
         </div>
@@ -55,10 +55,10 @@
             <!-- List prices range for restaurants  -->
           </a>
           <div class="menu">
-              <a class="item" onclick="input = $('#input')[0]; input.value += 'Low Price, '; input.focus()">Low Price</a>
-              <a class="item" onclick="input = $('#input')[0]; input.value += 'Medium Price, '; input.focus()">Medium Price</a>
-              <a class="item" onclick="input = $('#input')[0]; input.value += 'High Price, '; input.focus()">High Price</a>
-              <a class="item" onclick="input = $('#input')[0]; input.value += 'Anyprice, '; input.focus()">Anyprice</a>
+              <a class="item" onclick="input = $('#input')[0]; input.value += 'Low Price '; input.focus()">Low Price</a>
+              <a class="item" onclick="input = $('#input')[0]; input.value += 'Medium Price '; input.focus()">Medium Price</a>
+              <a class="item" onclick="input = $('#input')[0]; input.value += 'High Price '; input.focus()">High Price</a>
+              <a class="item" onclick="input = $('#input')[0]; input.value += 'Anyprice '; input.focus()">Anyprice</a>
           </div>
         </div>
         &ensp;
@@ -72,9 +72,9 @@
             <!-- List time that you want to go -->
           </a>
           <div class="menu">
-              <a class="item" onclick="input = $('#input')[0]; input.value += 'Anytime, '; input.focus()">Anytime</a>
-              <a class="item" onclick="input = $('#input')[0]; input.value += 'Now, '; input.focus()">Now</a>
-              <a class="item" onclick="input = $('#input')[0]; input.value += 'Choose time, '; input.focus()">Choose time</a>
+              <a class="item" onclick="input = $('#input')[0]; input.value += 'Anytime '; input.focus()">Anytime</a>
+              <a class="item" onclick="input = $('#input')[0]; input.value += 'Now '; input.focus()">Now</a>
+              <a class="item" onclick="input = $('#input')[0]; input.value += 'Choose time '; input.focus()">Choose time</a>
           </div>
         </div>
         &ensp;

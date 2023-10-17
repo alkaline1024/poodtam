@@ -88,11 +88,11 @@
                       <div class="item" style="font-weight: 500">
                         Price range
                         {% if data["price"] == "฿" %}
-                        Less than 100 Baht&ensp;<div class="ui basic grey label tag" style="font-weight: 600 !important;">฿</div>
+                        Less than 100 Baht&ensp;<div class="ui basic {{ 'teal link pop' if data['price'] in current_user.preferred_prices else 'grey' }} label tag" data-content="You liked this price" data-variation="inverted tiny" data-position="bottom center" style="font-weight: 600 !important;">฿</div>
                         {% elif data["price"] == "฿฿" %}
-                        100 Baht - 250 Baht&ensp;<div class="ui basic grey label tag" style="font-weight: 600 !important;">฿฿</div>
+                        100 Baht - 250 Baht&ensp;<div class="ui basic {{ 'teal link pop' if data['price'] in current_user.preferred_prices else 'grey' }} label tag" data-content="You liked this price" data-variation="inverted tiny" data-position="bottom center" style="font-weight: 600 !important;">฿฿</div>
                         {% else %}
-                        More than 250 Baht&ensp;<div class="ui basic grey label tag" style="font-weight: 600 !important;">฿฿฿</div>
+                        More than 250 Baht&ensp;<div class="ui basic {{ 'teal link pop' if data['price'] in current_user.preferred_prices else 'grey' }} label tag" data-content="You liked this price" data-variation="inverted tiny" data-position="bottom center" style="font-weight: 600 !important;">฿฿฿</div>
                         {% endif %}
                       </div> 
                     </p>
@@ -103,7 +103,7 @@
                   </div>
                 {% endfor %}
               {% else %}
-                Can not read DataFrame
+                > DataFrame is Empty
               {% endif %}
             </div>
           {% endif %}

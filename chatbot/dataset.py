@@ -30,6 +30,7 @@ df_types = df["type"].str.split(",").tolist()
 restaurant_types = list(set([word for sublist in df_types for word in sublist]))
 restaurant_types.sort()
 TYPE_CORPUS = restaurant_types
+TYPE_CHOICES_HTML = '<div class="ui labels">' + ' '.join([f'<a class="ui teal label"' + ' onclick=' + '"' + f"console.log('hello, world!'); input=$('#input')[0]; input.value+='{type} '; input.focus()" + '">' + type + '</a>' for type in TYPE_CORPUS]) + '</div>'
 
 # *** PRICE DATASET ***
 PRICE_CHOICES = [
@@ -87,6 +88,9 @@ ANYTIME_CORPUS = [
     "all day",
     "everytime",
     "not specific",
+]
+NOW_TIME_CORPUS = [
+    "now",
     "currently",
 ]
 SPECIFIC_TIME_CORPUS = [
@@ -114,7 +118,7 @@ DINNER_CORPUS = [
     "night",
     "midnight",
 ]
-TIME_CORPUS = ANYTIME_CORPUS + SPECIFIC_TIME_CORPUS + BREAKFAST_CORPUS + LUNCH_CORPUS + DINNER_CORPUS
+TIME_CORPUS = ANYTIME_CORPUS + NOW_TIME_CORPUS + SPECIFIC_TIME_CORPUS + BREAKFAST_CORPUS + LUNCH_CORPUS + DINNER_CORPUS
 
 
 RESET_CORPUS = [

@@ -81,7 +81,7 @@ def answer_recommandation(chat):
 
     selected_df = type_df if not preferred_prices else price_df
     if selected_df.empty:
-        answer = f"This is restaurant base on your setting prefers. {random.choice(HAPPY_EMOJI_CHOICE)} <p><div class='ui brown horizontal label'>Types</div> {user_preferred_type_html}</p><p><div class='ui green horizontal label'>Prices</div> {user_preferred_price_html}</p></p>"
+        answer = f"This is restaurant base on your setting prefers. If you don't like {random.choice(SAD_EMOJI_CHOICE)} you can change at <a href='/edit-profile'>Edit Profile</a></p> {random.choice(HAPPY_EMOJI_CHOICE)} <p><div class='ui brown horizontal label'>Types</div> {user_preferred_type_html}</p><p><div class='ui green horizontal label'>Prices</div> {user_preferred_price_html}</p></p>"
         chat.create_bot_message("text", answer)
         chat.create_bot_message_dataframe(type_df)
         return False
@@ -96,7 +96,7 @@ def answer_recommandation(chat):
     chat.create_bot_message("text", answer)
     chat.create_bot_message_dataframe(final_df)
 
-    answer = f"{random.choice(GREETING_CHOICE)} {random.choice(HAPPY_EMOJI_CHOICE)} I just give you recommandation about restaurant {random.choice(HAPPY_EMOJI_CHOICE)} <p></p> This data is based on your prefers. <p><div class='ui brown horizontal label'>Types</div> {user_preferred_type_html}</p><p><div class='ui green horizontal label'>Prices</div> {user_preferred_price_html}</p>"
+    answer = f"{random.choice(GREETING_CHOICE)} {random.choice(HAPPY_EMOJI_CHOICE)} I just give you recommandation about restaurant {random.choice(HAPPY_EMOJI_CHOICE)} <p></p> This data is based on your prefers. If you don't like {random.choice(SAD_EMOJI_CHOICE)} you can change at <a href='/edit-profile'>Edit Profile</a><p><div class='ui brown horizontal label'>Types</div> {user_preferred_type_html}</p><p><div class='ui green horizontal label'>Prices</div> {user_preferred_price_html}</p>"
     chat.create_bot_message("text", answer)
     answer = f"We hope you liked it. {random.choice(HAPPY_EMOJI_CHOICE)}"
     chat.create_bot_message("text", answer)
@@ -161,7 +161,7 @@ def chat_answer(chat, input):
         if not answer:
             return question_time(chat, input)
 
-    if chat.current_time in CHOOSE_TIME_CORPUS and not chat.selected_time:
+    if chat.current_time.lower() in SPECIFIC_TIME_CORPUS:
         answer = answer_specific_time(chat, input)
         if not answer:
             return question_specific_time(chat, input)
@@ -212,9 +212,9 @@ def answer_type(chat, input):
 # PRICE
 def question_price(chat, input):
     color = LABEL_COLORS[TYPE_CORPUS.index(chat.current_type) % len(LABEL_COLORS)]
-    question = f"<div class='ui {color} label'>{chat.current_type}</div> What price range do you prefer? <ol class='ui suffixed list'><li>Low <span class='ui grey text'>(Less than 100 baht)</span></li><li>Medium <span class='ui grey text'>(100 baht - 250 baht)</span></li><li>High <span class='ui grey text'>(More than 250 baht)</span></li><li>Not specific</li></ol> "
+    question = f"<div class='ui {color} label'>{chat.current_type}</div> What price range do you prefer? <ol class='ui suffixed list'><li>Low <span class='ui grey text'>(Less than 100 baht)</span></li><li>Medium <span class='ui grey text'>(100 baht - 250 baht)</span></li><li>High <span class='ui grey text'>(More than 250 baht)</span></li><li>Anyprice</li></ol> "
     if chat.current_state == "price":
-        question = f"Sorry <b>{random.choice(SAD_EMOJI_CHOICE)}</b> We were unable to find an answer for the message {input} with the data. You can try searching with our price information. <p/> <ol class='ui suffixed list'><li>Low <span class='ui grey text'>(Less than 100 Baht)</span></li><li>Medium <span class='ui grey text'>(100 Baht - 250 Baht)</span></li><li>High <span class='ui grey text'>(More than 250 Baht)</span></li><li>Not specific</li></ol>"
+        question = f"Sorry <b>{random.choice(SAD_EMOJI_CHOICE)}</b> We were unable to find an answer for the message {input} with the data. You can try searching with our price information. <p/> <ol class='ui suffixed list'><li>Low <span class='ui grey text'>(Less than 100 Baht)</span></li><li>Medium <span class='ui grey text'>(100 Baht - 250 Baht)</span></li><li>High <span class='ui grey text'>(More than 250 Baht)</span></li><li>Any Price</li></ol>"
 
     chat.create_bot_message("text", question)
     chat.current_state = "price"
@@ -229,7 +229,7 @@ def answer_price(chat, input):
     if input == "3":
         input = "high"
     if input == "4":
-        input = "not specific"
+        input = "anyprice"
     
     predict, score = calculate_similarity_score(input.lower(), PRICE_CORPUS)
     print(f'current_state({chat.current_state}) | input: "{input}" | predict: "{predict}" | score: {score}')
@@ -296,6 +296,7 @@ def answer_time(chat, input):
 
 # CHOOSE PERIOD
 def question_specific_time(chat, input):
+    chat.current_time = 'specific'
     question = f"<div class='ui teal label'>Choose time</div> Please specify the time you want to go. <span class='ui grey text'>(For example 18:30, 9.15, 10.00)</span>"
     if chat.current_state == "choose_period":
         question = f"<div class='ui purple label'>{input}</div> Please specify the time according to the specified format. <span class='ui grey text'>(For example 18:30, 9.15, 10.00)</span>"
@@ -307,16 +308,17 @@ def question_specific_time(chat, input):
 
 def answer_specific_time(chat, input):
     try:
-        select_time = datetime.datetime.strptime(input, "%H.%M").time()
+        select_time = datetime.datetime.strptime(input, "%H.%M")
+        chat.selected_time = select_time
     except:
         try:
-            select_time = datetime.datetime.strptime(input, "%H:%M").time()
+            select_time = datetime.datetime.strptime(input, "%H:%M")
+            chat.selected_time = select_time
         except:
             chat.current_state = "choose_period"
             chat.save()
             return False
 
-    chat.selected_time = select_time
     chat.current_state = "completed"
     chat.save()
     return True
@@ -341,9 +343,9 @@ def chat_final_answer_dataframe(chat):
     if chat.selected_time:
         df = query_df.query_in_period_time(df, chat)
         if df.empty:
-            chat.selected_time = chat.selected_time.strftime("%H:%M")
-            queried_price_df = query_df.query_price(df, chat.current_price)
-            answer = f"Sorry <b>{random.choice(HAPPY_EMOJI_CHOICE)}</b> We couldn't find any restaurants open during the time you selected. <div class='ui purple label'>{chat.selected_time}</div> <p/>Here are our recommended restaurants. Hope you like it. {random.choice(HAPPY_EMOJI_CHOICE)}"
+            selected_time = chat.selected_time.strftime("%H:%M")
+            queried_price_df = query_df.query_price(unqueried_df, chat.current_price)
+            answer = f"Sorry <b>{random.choice(HAPPY_EMOJI_CHOICE)}</b> We could not find any restaurants open during the time you selected. <div class='ui purple label'>{selected_time}<div class='detail'>{chat.current_time.title()}</div></div> <p/>Here are our recommended restaurants. Hope you like it. {random.choice(HAPPY_EMOJI_CHOICE)}"
             chat.create_current_information()
             chat.create_bot_message_dataframe(queried_price_df)
             chat.create_bot_message("text", answer)

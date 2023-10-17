@@ -62,7 +62,7 @@ class Chat(me.Document):
 
     def create_current_information(self):
         answer = f'Your summary information is: <div class="ui brown label">{self.current_type.title()}<div class="detail">Type</div></div> <div class="ui green label">{self.current_price.title()}<div class="detail">Price</div></div> <div class="ui purple label">{self.current_time.title()}<div class="detail">Time</div></div>'
-        answer += f'<div class="ui purple label">{self.selected_time.strftime("%H:%M")}<div class="detail">Time</div></div>' if self.selected_time and self.current_time not in dataset.CHOOSE_TIME_CORPUS else ''
+        answer += f'<div class="ui purple label">{self.selected_time.strftime("%H:%M")}<div class="detail">Time</div></div>' if isinstance(self.selected_time, datetime.datetime) and self.current_time not in dataset.CHOOSE_TIME_CORPUS else ''
         self.create_bot_message("text", answer)
 
     def save_current_df(self, df):

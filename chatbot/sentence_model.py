@@ -26,7 +26,7 @@ def calculate_similarity_score(question, corpus):
     entity_vector = np.array(cosine_scores)
 
     score = np.max(entity_vector)
-    if score >= 0.6:
+    if score >= 0.7:
         match_entity = corpus[np.argmax(entity_vector)]
         return match_entity, score
     return None, score

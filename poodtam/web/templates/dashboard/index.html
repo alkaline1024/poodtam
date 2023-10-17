@@ -33,7 +33,15 @@
         <div class="detail">Price</div>
       </div>
       <div class="ui {{ 'purple' if chat.current_time }} label">
-        {{ chat.current_time.title() if chat.current_time else 'Not Selected' }}
+        {% if chat.current_time %}
+          {% if chat.current_time.lower() == "specific" and chat.selected_time %}
+            {{ chat.selected_time.strftime("%H:%M") }}
+          {% else %}
+            {{ chat.current_time.title() }}
+          {% endif %}
+        {% else %}
+          Not Selected
+        {% endif %}
         <div class="detail">Time</div>
       </div>
     </div>

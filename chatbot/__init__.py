@@ -10,7 +10,7 @@ import numpy as np
 
 from lxml import html
 
-from .dataset import GREETING_CORPUS, TYPE_CORPUS, PRICE_CHOICES, ANYPRICE_CORPUS, LOW_PRICE_CORPUS, MEDIUM_PRICE_CORPUS, HIGH_PRICE_CORPUS, PRICE_CORPUS, ANYTIME_CORPUS, SPECIFIC_TIME_CORPUS, TIME_CORPUS, RESET_CORPUS, ALL_CORPUS, GREETING_CHOICE, ACCEPTED_CHOICE, SAD_EMOJI_CHOICE, HAPPY_EMOJI_CHOICE, RECOMMAND_CHOICE, LABEL_COLORS, UNNECESSARY_WORDS, TYPE_CHOICES_HTML
+from .dataset import GREETING_CORPUS, TYPE_CORPUS, PRICE_CHOICES, ANYPRICE_CORPUS, LOW_PRICE_CORPUS, MEDIUM_PRICE_CORPUS, HIGH_PRICE_CORPUS, PRICE_CORPUS, ANYTIME_CORPUS, SPECIFIC_TIME_CORPUS, TIME_CORPUS, RESET_CORPUS, ALL_CORPUS, GREETING_CHOICE, ACCEPTED_CHOICE, SAD_EMOJI_CHOICE, HAPPY_EMOJI_CHOICE, RECOMMAND_CHOICE, LABEL_COLORS, UNNECESSARY_WORDS, TYPE_CHOICES_HTML, CHOOSE_TIME_CORPUS, NOW_TIME_CORPUS, BREAKFAST_CORPUS, LUNCH_CORPUS, DINNER_CORPUS
 from .dataset import df
 
 from . import query_df
@@ -142,12 +142,12 @@ def chat_answer(chat, input):
         if not answer:
             return question_time(chat, input)
 
-    if chat.current_time in SPECIFIC_TIME_CORPUS and not chat.selected_time:
-        answer = answer_choose_period(chat, input)
+    if chat.current_time in CHOOSE_TIME_CORPUS and not chat.selected_time:
+        answer = answer_specific_time(chat, input)
         if not answer:
-            return question_choose_period(chat, input)
+            return question_specific_time(chat, input)
     
-    return chat_final_answer_dataframe(chat, chat.current_type, chat.current_price, chat.selected_time)
+    return chat_final_answer_dataframe(chat)
 
 
 def answer_greeting(chat, input):
@@ -228,10 +228,10 @@ def answer_price(chat, input):
 
 # TIME
 def question_time(chat, input):
-    color = ["green", "primary", "red"][PRICE_CORPUS.index(chat.current_price) % 3]
-    question = f"<div class='ui {color} label'>{chat.current_price.title()}</div> What time do you want to go? <ol class='ui suffixed list'><li>Anytime</li><li>Choose time</li></ol>"
+    color = ["brown", "green", "red"][PRICE_CORPUS.index(chat.current_price) % 3]
+    question = f"<div class='ui {color} label'>{chat.current_price.title()}</div> What time do you want to go? <ol class='ui suffixed list'><li>Now</li><li>Breakfast</li><li>Lunch</li><li>Dinner</li><li>Specific time</li><li>Anytime</li></ol>"
     if chat.current_state == "time":
-        question = f"<div class='ui teal label'>Choose time</div> Try to choose time you want to go again {random.choice(SAD_EMOJI_CHOICE)} <ol class='ui suffixed list'><li>Anytime</li><li>Choose time</li></ol>"
+        question = f"<div class='ui teal label'>Choose time</div> Try to choose time you want to go again {random.choice(SAD_EMOJI_CHOICE)} <ol class='ui suffixed list'><li>Now</li><li>Breakfast</li><li>Lunch</li><li>Dinner</li><li>Specific time</li><li>Anytime</li></ol>"
 
     chat.create_bot_message("text", question)
     chat.current_state = "time"
@@ -240,9 +240,18 @@ def question_time(chat, input):
 
 def answer_time(chat, input):
     if input == "1":
-        input = "anytime"
-    if input == "2":
-        input = "choose"
+        input = "Now"
+    elif input == "2":
+        input = "Breakfast"
+    elif input == "3":
+        input = "Lunch"
+    elif input == "4":
+        input = "Dinner"
+    elif input == "5":
+        input = "Specific"
+    elif input == "6":
+        input = "Anytime"
+
     predict, score = calculate_similarity_score(input.lower(), TIME_CORPUS)
     print(f'current_state({chat.current_state}) | input: "{input}" | predict: "{predict}" | score: {score}')
 
@@ -253,10 +262,25 @@ def answer_time(chat, input):
         chat.current_time = predict
         chat.save()
         return True
+    elif predict in CHOOSE_TIME_CORPUS:
+        chat.current_state = "completed"
+        chat.current_time = predict
+        if predict in NOW_TIME_CORPUS:
+            chat.selected_time = datetime.datetime.now()
+        elif predict in BREAKFAST_CORPUS:
+            chat.selected_time = datetime.datetime.now().replace(hour=8)
+        elif predict in LUNCH_CORPUS:
+            chat.selected_time = datetime.datetime.now().replace(hour=12)
+        elif predict in DINNER_CORPUS:
+            chat.selected_time = datetime.datetime.now().replace(hour=16)
+        chat.save()
+        return True
+    elif predict in SPECIFIC_TIME_CORPUS:
+        return False
     return False
 
 # CHOOSE PERIOD
-def question_choose_period(chat, input):
+def question_specific_time(chat, input):
     question = f"<div class='ui teal label'>Choose time</div> Please specify the time you want to go. <span class='ui grey text'>(For example 18:30, 9.15, 10.00)</span>"
     if chat.current_state == "choose_period":
         question = f"<div class='ui purple label'>{input}</div> Please specify the time according to the specified format. <span class='ui grey text'>(For example 18:30, 9.15, 10.00)</span>"
@@ -266,7 +290,7 @@ def question_choose_period(chat, input):
     chat.save()
     return question
 
-def answer_choose_period(chat, input):
+def answer_specific_time(chat, input):
     try:
         select_time = datetime.datetime.strptime(input, "%H.%M").time()
     except:
@@ -283,34 +307,35 @@ def answer_choose_period(chat, input):
     return True
 
 # FINAL DATAFRAME
-def chat_final_answer_dataframe(chat, type, price, selected_time=None):
-    unqueried_df = dataset.df.copy()
-    df = query_df.query_type(unqueried_df, type)
+def chat_final_answer_dataframe(chat):
+    chat.current_state = "completed"
 
-    if price not in ANYPRICE_CORPUS:
-        df = query_df.query_price(df, price)
+    unqueried_df = dataset.df.copy()
+    df = query_df.query_type(unqueried_df, chat.current_type)
+
+    if chat.current_price not in ANYPRICE_CORPUS:
+        df = query_df.query_price(df, chat.current_price)
         if df.empty:
-            answer = f"Sorry <b>{random.choice(SAD_EMOJI_CHOICE)}</b> for the information right now. We couldn't find any restaurants in the category you selected for the price ({price}) <br>Here are some restaurants in our ({type}) type that we recommend. We hope you like them. {random.choice(HAPPY_EMOJI_CHOICE)}"
-            chat.create_bot_message("text", answer)
-            queried_type_df = query_df.query_type(unqueried_df, type)
+            queried_type_df = query_df.query_type(unqueried_df, chat.current_type)
+            answer = f"Sorry <b>{random.choice(SAD_EMOJI_CHOICE)}</b> for the information right now. We couldn't find any <div class='ui brown label'>{chat.current_type}</div> for the <div class='ui green label'>{chat.current_price.title()}</div> price. <p></p>Here are <div class='ui brown label'>{chat.current_type}</div> that we recommend. We hope you like them. {random.choice(HAPPY_EMOJI_CHOICE)}"
             chat.create_bot_message_dataframe(queried_type_df)
+            chat.create_current_information()
+            chat.create_bot_message("text", answer)
             return True
     
-    if selected_time:
-        df = query_df.query_in_period_time(df, selected_time)
+    if chat.selected_time:
+        df = query_df.query_in_period_time(df, chat)
         if df.empty:
-            selected_time = selected_time.strftime("%H:%M")
-            answer = f"Sorry <b>{random.choice(HAPPY_EMOJI_CHOICE)}</b> We couldn't find any restaurants open during the time you selected. ({selected_time}) <br>Here are our recommended restaurants. Hope you like it. {random.choice(HAPPY_EMOJI_CHOICE)}"
-            chat.create_bot_message("text", answer)
-            queried_price_df = query_df.query_price(df, price)
+            chat.selected_time = chat.selected_time.strftime("%H:%M")
+            queried_price_df = query_df.query_price(df, chat.current_price)
+            answer = f"Sorry <b>{random.choice(HAPPY_EMOJI_CHOICE)}</b> We couldn't find any restaurants open during the time you selected. <div class='ui purple label'>{chat.selected_time}</div> <p/>Here are our recommended restaurants. Hope you like it. {random.choice(HAPPY_EMOJI_CHOICE)}"
             chat.create_bot_message_dataframe(queried_price_df)
+            chat.create_current_information()
+            chat.create_bot_message("text", answer)
             return True
     
     answer = f"Here is a list of restaurants we think are right for you. {random.choice(HAPPY_EMOJI_CHOICE)}"
-    chat.create_bot_message("text", answer)
     chat.create_bot_message_dataframe(df)
-
-    answer = f'Your summary information is: <div class="ui green label">{type.title()}</div> <div class="ui primary label">{price.title()}</div> <div class="ui purple label">{chat.current_time.title()}</div>'
-    answer += f'<div class="ui purple label">{selected_time}</div>' if selected_time else ''
+    chat.create_current_information()
     chat.create_bot_message("text", answer)
     return True

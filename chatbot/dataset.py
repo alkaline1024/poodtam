@@ -102,6 +102,8 @@ SPECIFIC_TIME_CORPUS = [
     "i will choose",
     "choose myself",
     "myself",
+    "specific",
+    "time"
 ]
 BREAKFAST_CORPUS = [
     "breakfast",
@@ -118,8 +120,8 @@ DINNER_CORPUS = [
     "night",
     "midnight",
 ]
-TIME_CORPUS = ANYTIME_CORPUS + NOW_TIME_CORPUS + SPECIFIC_TIME_CORPUS + BREAKFAST_CORPUS + LUNCH_CORPUS + DINNER_CORPUS
-
+CHOOSE_TIME_CORPUS = NOW_TIME_CORPUS + BREAKFAST_CORPUS + LUNCH_CORPUS + DINNER_CORPUS
+TIME_CORPUS = CHOOSE_TIME_CORPUS + ANYTIME_CORPUS + SPECIFIC_TIME_CORPUS
 
 RESET_CORPUS = [
     "reset",
@@ -153,18 +155,24 @@ LABEL_COLORS = [
 UNNECESSARY_WORDS = [
     ",",
     ".",
+    "!",
+    "and",
     "restaurants",
     "restaurant",
     "stores",
     "store",
     "shops"
     "shop",
+    "food",
     "please",
     "give",
     "me",
     "my",
     "mine",
+    "a",
     "i",
+    "to",
+    "in",
     "want",
     "some",
     "can",
@@ -176,9 +184,9 @@ UNNECESSARY_WORDS = [
     "best",
     "good",
     "with",
-    "in",
     "price",
     "prices",
+    "the",
     "that",
     "thad",
     "dat",

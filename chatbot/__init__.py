@@ -53,12 +53,20 @@ def answer_recommandation(chat):
     
     chat.current_state = "none"
     
+    answer = ""
     if not preferred_types:
-        answer = random.choice(GREETING_CHOICE) + random.choice(HAPPY_EMOJI_CHOICE) + "You didn't select preferred type of restaurants"
-        chat.create_bot_message("text", answer)
+        answer += '<p>' + random.choice(GREETING_CHOICE) + random.choice(HAPPY_EMOJI_CHOICE) + "You didn't select preferred type of restaurants, You can setting in <a href='/edit-profile'>Edit Profile</a></p>"
     if not preferred_prices:
-        answer = random.choice(GREETING_CHOICE) + random.choice(HAPPY_EMOJI_CHOICE) + "You didn't select preferred price of restaurants"
+        answer += '<p>' + random.choice(GREETING_CHOICE) + random.choice(HAPPY_EMOJI_CHOICE) + "You didn't select preferred price of restaurants, You can setting in <a href='/edit-profile'>Edit Profile</a></p>"
+    if answer:
         chat.create_bot_message("text", answer)
+
+    if not preferred_types and not preferred_prices:
+        answer = f"{random.choice(HAPPY_EMOJI_CHOICE)} {random.choice(HAPPY_EMOJI_CHOICE)} But don't worry We have some restaurant recommand to you !"
+        random_df = dataset.df.sample(n=5, replace=False)
+        chat.create_bot_message("text", answer)
+        chat.create_bot_message_dataframe(random_df)
+        return True
     
     type_df = pd.DataFrame([])
     for type in preferred_types:
@@ -73,12 +81,9 @@ def answer_recommandation(chat):
 
     selected_df = type_df if not preferred_prices else price_df
     if selected_df.empty:
-        answer = f"Sorry we cannot find restaurant suite with your prefer {random.choice(SAD_EMOJI_CHOICE)}"
+        answer = f"This is restaurant base on your setting prefers. {random.choice(HAPPY_EMOJI_CHOICE)} <p><div class='ui brown horizontal label'>Types</div> {user_preferred_type_html}</p><p><div class='ui green horizontal label'>Prices</div> {user_preferred_price_html}</p></p>"
         chat.create_bot_message("text", answer)
-        answer = f"{random.choice(SAD_EMOJI_CHOICE)} Your current preferred type is {user_preferred_type_html}"
-        chat.create_bot_message("text", answer)
-        answer = f"{random.choice(SAD_EMOJI_CHOICE)} Your current preferred price is {user_preferred_price_html}"
-        chat.create_bot_message("text", answer)
+        chat.create_bot_message_dataframe(type_df)
         return False
     
     final_df = query_df.query_in_period_now(selected_df)
@@ -169,12 +174,7 @@ def answer_greeting(chat, input):
         f'current_state({chat.current_state}) | input: "{input}" | predict: "{predict}" | score: {score}'
     )
     if predict in GREETING_CORPUS:
-        answer = (
-            random.choice(GREETING_CHOICE)
-            + random.choice(HAPPY_EMOJI_CHOICE)
-            + random.choice(RECOMMAND_CHOICE)
-            + question_type(chat, input)
-        )
+        question_type(chat, input)
     else:
         answer = (
             random.choice(GREETING_CHOICE)
@@ -184,11 +184,12 @@ def answer_greeting(chat, input):
     chat.current_state = "type"
     chat.save()
     chat.save_current_df(current_df)
-    return answer
+    return True
 
 # TYPE
 def question_type(chat, input):
-    question = "You can tell me type of restaurant you like!" + random.choice(HAPPY_EMOJI_CHOICE)
+
+    question = f"{random.choice(GREETING_CHOICE)} {random.choice(HAPPY_EMOJI_CHOICE)} {random.choice(RECOMMAND_CHOICE)} {random.choice(HAPPY_EMOJI_CHOICE)}"
     if chat.current_state == "type":
         question = f"Based on my data You can try choosing a type of restaurant from this type.! {random.choice(HAPPY_EMOJI_CHOICE)} <p/> <br> {TYPE_CHOICES_HTML}"
 

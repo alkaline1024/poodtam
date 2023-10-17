@@ -23,7 +23,7 @@
       </div>
     </div>
     <div class="ui top attached right aligned segment">
-      Current Information:&ensp;
+      Current Given Information:&ensp;
       <div class="ui brown label">
         {{ chat.current_type.title() if chat.current_type else 'Not Selected' }}
         <div class="detail">Type</div>
@@ -105,16 +105,23 @@
       {% endif %}
       {{ quick_reply.Reset(chat) }}
       <!-- INPUT START -->
-      <div class="ui info message center aligned">
+      <div class="ui blue message center floating aligned">
         <form method="GET" action="{{ url_for('dashboard.submit_message', chat_id=chat.id) }}">
           <div class="ui fluid transparent input">
-            <input type="text" name="input" id="input" placeholder="Send a message">
+            <input type="text" name="input" id="input" placeholder="Ask me about Hatyai restaurant...">
             <button class="ui primary icon button">
               Submit
               <i class="send icon"></i>
             </button>
           </div>
         </form>
+      </div>
+      <div class="ui basic segment">
+        <div class="ui list">
+          <div class="item">Apples</div>
+          <div class="item">Pears</div>
+          <div class="item">Oranges</div>
+        </div>
       </div>
       <!-- END INPUT -->
     </div>

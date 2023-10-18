@@ -4,6 +4,7 @@ import requests
 import time
 import random
 import datetime
+import copy
 
 import pandas as pd
 import numpy as np
@@ -113,6 +114,7 @@ def chat_answer(chat, input):
     if "recommand restaurant for me" in input.lower():
         return answer_recommandation(chat)
 
+    copy_input = copy.copy(input)
     # CLEAR STOP WORDS
     for stopword in STOP_WORDS:
         input = input.replace(stopword, "")
@@ -162,7 +164,7 @@ def chat_answer(chat, input):
             return question_time(chat, input)
 
     if chat.current_time.lower() in SPECIFIC_TIME_CORPUS:
-        answer = answer_specific_time(chat, input)
+        answer = answer_specific_time(chat, copy_input)
         if not answer:
             return question_specific_time(chat, input)
     

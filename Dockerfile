@@ -20,9 +20,6 @@ COPY poetry.lock pyproject.toml /app/
 RUN $PYTHON -m poetry config installer.max-workers 10
 RUN $PYTHON -m poetry config virtualenvs.create false && $PYTHON -m poetry install --no-interaction --only main --no-ansi -vvv
 
-COPY scripts/update_oscrypto.sh /app/scripts/
-RUN sh scripts/update_oscrypto.sh /venv
-
 COPY poodtam/web/static/package.json poodtam/web/static/package-lock.json poodtam/web/static/
 RUN npm install --prefix poodtam/web/static
 

@@ -16,7 +16,9 @@ WORKDIR /app
 
 COPY poodtam/cmd /app/poodtam/cmd
 COPY poetry.lock pyproject.toml /app/
-RUN $PYTHON -m poetry config virtualenvs.create false && $PYTHON -m poetry install --no-interaction --only main
+
+RUN $PYTHON -m poetry config installer.max-workers 10
+RUN $PYTHON -m poetry config virtualenvs.create false && $PYTHON -m poetry install --no-interaction --only main --no-ansi -vvv
 
 COPY scripts/update_oscrypto.sh /app/scripts/
 RUN sh scripts/update_oscrypto.sh /venv

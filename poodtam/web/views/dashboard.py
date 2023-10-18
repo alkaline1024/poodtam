@@ -48,13 +48,11 @@ def index():
 
 @module.route("/submit_message/<chat_id>", methods=["GET"])
 def submit_message(chat_id):
-    user = current_user._get_current_object()
     chat = models.Chat.objects.get(id=chat_id)
     input = request.args.get("input", None)
     if input:
         chat.create_user_message("text", input)
         chat_answer(chat, input)
-    chat.save()
     return redirect(url_for('dashboard.index', chat_id=chat.id))
 
 @module.route("/random_sentence")

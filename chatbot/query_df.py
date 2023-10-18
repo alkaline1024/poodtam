@@ -23,13 +23,10 @@ def query_price(df, price):
 def query_in_period_time(df, chat):
     current_time = chat.current_time
     if current_time in BREAKFAST_CORPUS:
-        print("BREAKFAST_CORPUS")
         queried_df = df[(df["opening time"] < datetime.time(12))]
     elif current_time in LUNCH_CORPUS:
-        print("LUNCH_CORPUS")
         queried_df = df[(df["opening time"] < datetime.time(16))]
     elif current_time in DINNER_CORPUS:
-        print("DINNER_CORPUS")
         queried_df = df[(df["opening time"] < datetime.time(23))]
     elif current_time in NOW_TIME_CORPUS:
         queried_df = query_in_period_now(df)

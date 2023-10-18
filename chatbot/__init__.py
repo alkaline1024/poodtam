@@ -29,21 +29,21 @@ def generate_html_list(list):
 def generate_grey_text(text):
     return f'<span class="ui grey text">{text}</span>'
 
-
 def check_input_reset(chat, input):
     predict, score = calculate_similarity_score(input, RESET_CORPUS)
     print(
         f'current_state({chat.current_state}) | input: "{input}" | predict: "{predict}" | score: {score}'
     )
-    answer = None
     if predict:
         answer = (
             random.choice(ACCEPTED_CHOICE) + " "
             + random.choice(HAPPY_EMOJI_CHOICE)
             + random.choice(RECOMMAND_CHOICE)
         )
-   
-    return answer
+        chat.create_bot_message("text", answer)
+        chat.clear_current_data()
+        return True
+    return False
 
 def answer_recommandation(chat):
     df = dataset.df.copy()
@@ -105,16 +105,14 @@ def answer_recommandation(chat):
 
 
 def chat_answer(chat, input):
+    copy_input = copy.copy(input)
     reset_answer =  check_input_reset(chat, input)
     if reset_answer:
-        chat.create_bot_message("text", reset_answer)
-        chat.clear_current_data()
         return 
         
     if "recommand restaurant for me" in input.lower():
         return answer_recommandation(chat)
 
-    copy_input = copy.copy(input)
     # CLEAR STOP WORDS
     for stopword in STOP_WORDS:
         input = input.replace(stopword, "")
@@ -122,24 +120,15 @@ def chat_answer(chat, input):
     lst_input = input.lower().split()
     for word in lst_input:
         if word in UNNECESSARY_WORDS:
-            # This is unnecnessary word something like eg. "what is restaurant", "how", "i want"
-            # We keep only important word eg. FastFood, High Price, Midnight
             continue
-
-        predict, score= calculate_similarity_score(word, ALL_CORPUS)
-        print(f"\nword: {word} \t=> {predict} \t score: {score}")
+        predict, score = calculate_similarity_score(word, ALL_CORPUS)
         if predict in TYPE_CORPUS:
-            print(">catch (type) ", predict)
             chat.current_type = predict
             answer = answer_type(chat, predict)
-
         elif predict in TIME_CORPUS:
-            print(">catch (time) ", predict)
             chat.current_time = predict
             answer = answer_time(chat, predict)
-
         elif predict in PRICE_CORPUS:
-            print(">catch (price) ", predict)
             chat.current_price = predict
             answer = answer_price(chat, predict)
 

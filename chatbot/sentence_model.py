@@ -1,7 +1,5 @@
 import numpy as np
 # module selenium
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
 from sentence_transformers import SentenceTransformer, util
 
 
@@ -17,9 +15,7 @@ def calculate_similarity_score(question, corpus):
             lst_question.remove(word)
     cleaned_question = " ".join(lst_question)
 
-    question_vec = model.encode(
-        cleaned_question, convert_to_tensor=True, normalize_embeddings=True
-    )
+    question_vec = model.encode(cleaned_question, convert_to_tensor=True, normalize_embeddings=True)
     corpus_vec = model.encode(corpus, convert_to_tensor=True, normalize_embeddings=True)
 
     cosine_scores = util.cos_sim(question_vec, corpus_vec)
@@ -27,6 +23,7 @@ def calculate_similarity_score(question, corpus):
 
     score = np.max(entity_vector)
     if score >= 0.7:
-        match_entity = corpus[np.argmax(entity_vector)]
-        return match_entity, score
+        predict = corpus[np.argmax(entity_vector)]
+        return predict, score
     return None, score
+

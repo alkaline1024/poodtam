@@ -13,8 +13,6 @@ ENV PYTHON=/venv/bin/python3
 RUN $PYTHON -m pip install wheel poetry gunicorn
 
 WORKDIR /app
-COPY fonts /app/fonts
-RUN mkdir -p /usr/share/fonts/opentype && cp -r fonts/* /usr/share/fonts/opentype/ && fc-cache -fv
 
 COPY poodtam/cmd /app/poodtam/cmd
 COPY poetry.lock pyproject.toml /app/
